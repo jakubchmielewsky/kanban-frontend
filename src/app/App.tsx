@@ -1,5 +1,10 @@
-function App() {
-  return <div className="body-l">app</div>;
-}
+import { AppProvider } from "./AppProvider";
+import { AppRouter } from "./AppRouter";
 
-export default App;
+export default function App() {
+  return (
+    <AppProvider>
+      <AppRouter />
+    </AppProvider>
+  );
+}
