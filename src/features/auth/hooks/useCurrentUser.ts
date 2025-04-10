@@ -9,17 +9,20 @@ export const useCurrentUser = () => {
   const query = useQuery({
     queryKey: ["currentUser"],
     queryFn: fetchCurrentUser,
+    staleTime: 1000 * 60 * 5,
     retry: false,
-    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
-    if (query.isSuccess && query.data) {
+    if (query.data) {
       setUser(query.data);
-    } else {
+    } else if (query.isError) {
       setUser(null);
     }
-  }, [query.isSuccess, query.data, setUser]);
+  }, [query.data, query.isError, setUser]);
 
-  return query;
+  return {
+    ...query,
+    user: query.data,
+  };
 };

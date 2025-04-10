@@ -1,10 +1,7 @@
-import { AppProvider } from "./AppProvider";
 import { AppRouter } from "./AppRouter";
+import { useCurrentUser } from "../features/auth/hooks/useCurrentUser";
 
 export default function App() {
-  return (
-    <AppProvider>
-      <AppRouter />
-    </AppProvider>
-  );
+  useCurrentUser();
+  return <AppRouter />;
 }
