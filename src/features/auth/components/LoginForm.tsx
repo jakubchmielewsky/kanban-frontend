@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
 import { TextInput } from "../../../shared/components/textInput/TextInput";
+import { Button } from "../../../shared/components/button/Button";
+import { Spinner } from "../../../shared/components/spinner/Spinner";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -21,7 +23,18 @@ export const LoginForm = () => {
         label="Password"
         type="password"
       />
-      <button type="submit">Log In</button>
+      <Button
+        className="mt-4"
+        type="submit"
+        size="l"
+        disabled={login.isPending}
+      >
+        {login.isPending ? (
+          <Spinner size="md" className="text-white" />
+        ) : (
+          "Log In"
+        )}
+      </Button>
     </form>
   );
 };
