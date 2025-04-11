@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
+import { TextInput } from "../../../shared/components/TextInput";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -12,17 +13,13 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-      />
-      <input
-        type="password"
+    <form onSubmit={handleSubmit} className="flex flex-col w-full gap-4">
+      <TextInput value={email} onChange={setEmail} label="Email" />
+      <TextInput
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
+        onChange={setPassword}
+        label="Password"
+        type="password"
       />
       <button type="submit">Log In</button>
     </form>

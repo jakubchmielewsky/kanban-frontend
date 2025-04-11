@@ -43,7 +43,15 @@
   --font-size-heading-s: 12px;
   --line-height-heading-s: 15px;
   --font-weight-heading-s: 600;
+}
 
+@utility heading-* {
+  font-size: --value(--font-size-heading- *);
+  line-height: --value(--line-height-heading- *);
+  font-weight: --value(--font-weight-heading- *);
+}
+
+@theme {
   --font-size-body-l: 13px;
   --line-height-body-l: 23px;
   --font-weight-body-l: 400;
@@ -53,8 +61,8 @@
   --font-weight-body-m: 600;
 }
 
-@utility heading-* {
-  font-size: --value(--font-size-heading- *);
-  line-height: --value(--line-height-heading- *);
-  font-weight: --value(--font-weight-heading- *);
+@utility body-* {
+  font-size: --value(--font-size-body- *);
+  line-height: --value(--line-height-body- *);
+  font-weight: --value(--font-weight-body- *);
 }
