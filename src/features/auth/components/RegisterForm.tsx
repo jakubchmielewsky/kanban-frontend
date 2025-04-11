@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useRegister } from "../hooks/useRegister";
+import { Button } from "../../../shared/components/button/Button";
+import { Spinner } from "../../../shared/components/spinner/Spinner";
+import { TextInput } from "../../../shared/components/textInput/TextInput";
 
 export const RegisterForm = () => {
   const [email, setEmail] = useState("");
@@ -13,25 +16,32 @@ export const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-      />
-      <input
-        type="password"
+    <form onSubmit={handleSubmit} className="flex flex-col w-full gap-4">
+      <TextInput value={email} onChange={setEmail} label="Email" />
+      <TextInput
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      />
-      <input
+        onChange={setPassword}
+        label="Password"
         type="password"
-        value={passwordConfirm}
-        onChange={(e) => setPasswordConfirm(e.target.value)}
-        placeholder="Password"
       />
-      <button type="submit">Register</button>
+      <TextInput
+        value={passwordConfirm}
+        onChange={setPasswordConfirm}
+        label="Password Confirm"
+        type="password"
+      />
+      <Button
+        className="mt-4"
+        type="submit"
+        size="l"
+        disabled={register.isPending}
+      >
+        {register.isPending ? (
+          <Spinner size="md" className="text-white" />
+        ) : (
+          "Log In"
+        )}
+      </Button>
     </form>
   );
 };
