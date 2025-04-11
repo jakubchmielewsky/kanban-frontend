@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
-import { TextInput } from "../../../shared/components/TextInput";
+import { TextInput } from "../../../shared/components/textInput/TextInput";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
