@@ -39,7 +39,7 @@ export const RegisterForm = () => {
         {register.isPending ? (
           <Spinner size="md" className="text-white" />
         ) : (
-          "Log In"
+          "Register"
         )}
       </Button>
     </form>

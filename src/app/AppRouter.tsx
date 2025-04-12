@@ -1,10 +1,8 @@
-// src/router.tsx
 import { RegisterPage } from "../features/auth/pages/RegisterPage";
 import { LoginPage } from "../features/auth/pages/LoginPage";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "../shared/routing/ProtectedRoute";
-//import HomePage from './features/home/pages/HomePage'
-//import BoardPage from './features/boards/pages/BoardPage'
+import { ResponsiveLayout } from "./layout/ResponsiveLayout";
 
 export function AppRouter() {
   return (
@@ -12,14 +10,21 @@ export function AppRouter() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+
         <Route
-          path="/boards"
+          path="/"
           element={
             <ProtectedRoute>
-              <div>boards</div>
+              <ResponsiveLayout />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<Navigate to="boards" replace />} />
+          <Route
+            path="boards"
+            element={<div className="bg-light-gray h-full">Boards page</div>}
+          />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
