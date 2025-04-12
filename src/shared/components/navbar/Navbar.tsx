@@ -8,11 +8,11 @@ import { Button } from "../button/Button";
 export const Navbar: React.FC = () => {
   const isMobile = useIsMobile();
   return (
-    <nav className="h-17 pl-4 pr-2 flex items center justify-between">
+    <nav className="h-17 pr-2 flex items center justify-between">
       {/* Group 1 */}
       <div className="flex items-center gap-x-4">
         {!isMobile && (
-          <div className="h-full border-r border-lines-light  flex items-center w-[260px]">
+          <div className="pl-4 h-full border-r border-lines-light  flex items-center w-[260px]">
             <LogoDark />
           </div>
         )}
