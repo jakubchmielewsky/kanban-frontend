@@ -9,7 +9,9 @@ export const DesktopLayout: React.FC<{ children: React.ReactNode }> = ({
       <Navbar />
       <div className="h-full flex">
         <Sidebar />
-        <main className="flex-grow overflow-auto">{children}</main>
+        <main className="flex-grow overflow-x-auto border-t border-lines-light">
+          {children}
+        </main>
       </div>
     </div>
   );

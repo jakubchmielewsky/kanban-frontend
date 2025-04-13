@@ -12,12 +12,12 @@ export const Navbar: React.FC = () => {
       {/* Group 1 */}
       <div className="flex items-center gap-x-4">
         {!isMobile && (
-          <div className="pl-4 h-full border-r border-lines-light  flex items-center w-[260px]">
+          <div className="pl-4 h-full  flex items-center w-[260px] border-r border-lines-light">
             <LogoDark />
           </div>
         )}
         {isMobile && <LogoMobile />}
-        <div>Dropdown mobile menu</div>
+        <h4>Dropdown mobile menu</h4>
       </div>
 
       {/* Group 2 */}
