@@ -9,7 +9,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, isFetching, isLoading } = useCurrentUser();
 
   if (isFetching || isLoading) {
-    return <div>Loading...</div>;
+    return null;
   }
 
   if (!user) {

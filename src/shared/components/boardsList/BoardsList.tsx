@@ -4,12 +4,21 @@ import IconBoard from "../../../assets/icon-board.svg?react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "../spinner/Spinner";
 
-export const BoardsList: React.FC = () => {
+interface BoardsListProps {
+  onBoardSelect?: () => void;
+}
+
+export const BoardsList: React.FC<BoardsListProps> = ({ onBoardSelect }) => {
   const boards = useGetBoards();
   const { boardId } = useParams();
   const navigate = useNavigate();
 
   if (!boards.data) return <Spinner />;
+
+  const handleClick = (boardId: string) => {
+    navigate(`/boards/${boardId}`);
+    if (onBoardSelect) onBoardSelect();
+  };
 
   return (
     <div>
@@ -30,7 +39,7 @@ export const BoardsList: React.FC = () => {
             variant={"menu"}
             className={`text-medium-gray w-full justify-start pl-6`}
             size="l"
-            onClick={() => navigate(`/boards/${board._id}`)}
+            onClick={() => handleClick(board._id)}
             isSelected={board._id === boardId}
           >
             {board.name}
