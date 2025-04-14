@@ -1,7 +1,7 @@
 import { buttonVariantClasses, buttonSizeClasses } from "./buttonVariants";
 
 interface ButtonProps {
-  variant?: "primary" | "secondary" | "destructive" | "ghost";
+  variant?: "primary" | "secondary" | "destructive" | "ghost" | "menu";
   size?: "l" | "s";
   className?: string;
   children?: React.ReactNode;
@@ -9,8 +9,8 @@ interface ButtonProps {
   onClick?: () => void;
   iconLeft?: React.ReactNode;
   disabled?: boolean;
-  isMenuButton?: boolean;
   hidden?: boolean;
+  isSelected?: boolean;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -22,16 +22,18 @@ export const Button: React.FC<ButtonProps> = ({
   iconLeft,
   disabled = false,
   onClick,
-  isMenuButton = false,
   hidden = false,
+  isSelected = false,
 }) => {
   const baseClasses = `flex items-center justify-center font-bold transition-colors px-4 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed ${
-    isMenuButton ? "rounded-r-full" : "rounded-full"
-  } ${hidden && "hidden"}`;
+    variant === "menu" ? "rounded-r-full" : "rounded-full"
+  }  `;
 
   const finalClassName = `${baseClasses} ${buttonVariantClasses[variant]} ${
     buttonSizeClasses[size]
-  } ${className || ""}`;
+  } ${isSelected && "bg-main-purple text-white"} ${hidden && "hidden"} ${
+    className || ""
+  }`;
 
   return (
     <button
@@ -40,7 +42,7 @@ export const Button: React.FC<ButtonProps> = ({
       type={type}
       className={finalClassName}
     >
-      {iconLeft && <span className={children ? "mr-2" : ""}>{iconLeft}</span>}
+      {iconLeft && <span className={children ? "mr-4" : ""}>{iconLeft}</span>}
       {children}
     </button>
   );

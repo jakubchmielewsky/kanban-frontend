@@ -1,6 +1,12 @@
 import { RegisterPage } from "../features/auth/pages/RegisterPage";
 import { LoginPage } from "../features/auth/pages/LoginPage";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
 import { ProtectedRoute } from "../shared/routing/ProtectedRoute";
 import { ResponsiveLayout } from "./layout/ResponsiveLayout";
 
@@ -22,8 +28,15 @@ export function AppRouter() {
           <Route index element={<Navigate to="boards" replace />} />
           <Route
             path="boards"
-            element={<div className="bg-light-gray h-full">Boards page</div>}
-          />
+            element={
+              <div className="bg-light-gray h-full">
+                Boards page
+                <Outlet />
+              </div>
+            }
+          >
+            <Route path=":boardId" element={<div>board details</div>}></Route>
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

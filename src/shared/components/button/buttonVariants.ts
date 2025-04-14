@@ -3,6 +3,7 @@ export const buttonVariantClasses = {
   secondary: "bg-light-gray text-main-purple hover:bg-main-purple/10",
   destructive: "bg-red text-white hover:bg-red-hover",
   ghost: "bg-transparent",
+  menu: "",
 };
 
 export const buttonSizeClasses = {
