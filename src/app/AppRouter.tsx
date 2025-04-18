@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import { ProtectedRoute } from "../shared/routing/ProtectedRoute";
 import { ResponsiveLayout } from "./layout/ResponsiveLayout";
+import { Board } from "../features/boards/pages/Board";
 
 export function AppRouter() {
   return (
@@ -30,12 +31,11 @@ export function AppRouter() {
             path="boards"
             element={
               <div className="bg-light-gray h-full">
-                Boards page
                 <Outlet />
               </div>
             }
           >
-            <Route path=":boardId" element={<div>board details</div>}></Route>
+            <Route path=":boardId" element={<Board />}></Route>
           </Route>
         </Route>
       </Routes>
