@@ -17,7 +17,7 @@ export const Sidebar = () => {
 
   return (
     <aside
-      className={`relative h-full flex flex-col pt-4 pr-4 justify-between bg-white w-[260px] transition-all duration-300 border-r border-lines-light   ${
+      className={`relative h-full flex flex-col pt-4 pr-4 justify-between bg-white w-[260px] shrink-0 transition-all duration-300 border-r border-lines-light   ${
         isOpen ? "ml-0" : "-ml-[260px]"
       }`}
     >

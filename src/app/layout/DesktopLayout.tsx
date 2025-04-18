@@ -7,9 +7,9 @@ export const DesktopLayout: React.FC<{ children: React.ReactNode }> = ({
   return (
     <div className="flex flex-col h-screen">
       <Navbar />
-      <div className="h-full flex">
+      <div className="h-full flex overflow-hidden">
         <Sidebar />
-        <main className="flex-grow overflow-x-auto border-t border-lines-light">
+        <main className="flex-grow border-t border-lines-light overflow-hidden">
           {children}
         </main>
       </div>

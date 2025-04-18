@@ -5,7 +5,8 @@ import { useParams } from "react-router-dom";
 
 export const Board: React.FC = () => {
   const { boardId } = useParams();
-  const columns = useGetColumns(boardId);
+
+  const columns = useGetColumns(boardId || "");
 
   if (!columns.data) return null;
 
@@ -19,10 +20,12 @@ export const Board: React.FC = () => {
       </div>
     );
   return (
-    <div className="h-full flex p-4 gap-x-4">
-      {columns.data.map((column) => {
-        return <Column key={column._id} column={column}></Column>;
-      })}
+    <div className="h-full w-full overflow-x-auto">
+      <div className="flex flex-row gap-x-4 min-w-fit p-4">
+        {columns.data.map((column) => (
+          <Column key={column._id} column={column} />
+        ))}
+      </div>
     </div>
   );
 };
