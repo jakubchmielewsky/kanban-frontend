@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { TextInput } from "../../../shared/components/textInput/TextInput";
 import { Button } from "../../../shared/components/button/Button";
-import { useCreateBoard } from "../../boards/hooks/useCreateBoard";
+import { useCreateBoard } from "../hooks/useCreateBoard";
 import { Spinner } from "../../../shared/components/spinner/Spinner";
-import { useModalStore } from "../stores/useModalStore";
+import { useModalStore } from "../../../shared/stores/useModalStore";
 
 export const AddBoard: React.FC = () => {
   const [boardName, setBoardName] = useState("");

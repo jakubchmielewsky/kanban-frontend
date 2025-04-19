@@ -1,4 +1,4 @@
-import { Modal } from "../../features/modals/Modal";
+import { Modal } from "../../shared/components/Modal";
 import { Navbar } from "../../shared/components/navbar/Navbar";
 
 export const MobileLayout: React.FC<{ children: React.ReactNode }> = ({

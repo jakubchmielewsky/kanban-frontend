@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import IconChevronDown from "../../..//assets/icon-chevron-down.svg?react";
 import IconChevronUp from "../../..//assets/icon-chevron-up.svg?react";
 import { useState } from "react";
-import { BoardsList } from "../boardsList/BoardsList";
+import { BoardsList } from "../../../features/boards/components/BoardsList";
 
 export const NavbarMobileDropdown = () => {
   const boards = useGetBoards();

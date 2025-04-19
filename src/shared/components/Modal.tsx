@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
-import { useModalStore } from "./stores/useModalStore";
-import { AddBoard } from "./components/AddBoard";
+import { useModalStore } from "../stores/useModalStore";
+import { AddBoard } from "../../features/boards/modals/AddBoardModal";
 
 export const Modal: React.FC = () => {
   const current = useModalStore((store) => store.current);

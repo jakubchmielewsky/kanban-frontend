@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createBoard } from "../api";
-import { CreateUpdateBoardDto } from "../../../types/board";
+import { CreateUpdateBoardDto } from "../../../shared/types/board";
 
 export const useCreateBoard = () => {
   const queryClient = useQueryClient();

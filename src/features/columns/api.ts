@@ -1,5 +1,5 @@
 import api from "../../lib/axios";
-import { Column } from "../../types/column";
+import { Column } from "../../shared/types/column";
 
 export const fetchAllColumns = async (boardId: string): Promise<Column[]> => {
   const res = await api.get(`/boards/${boardId}/columns`);

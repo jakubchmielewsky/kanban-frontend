@@ -1,5 +1,5 @@
 import { useGetTasks } from "../../tasks/hooks/useGetTasks";
-import { Column as ColumnType } from "../../../types/column";
+import { Column as ColumnType } from "../../../shared/types/column";
 import { Task } from "../../tasks/components/Task";
 
 interface ColumnProps {

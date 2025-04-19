@@ -1,9 +1,9 @@
-import { useGetBoards } from "../../../features/boards/hooks/useGetBoards";
-import { Button } from "../button/Button";
+import { useGetBoards } from "../hooks/useGetBoards";
+import { Button } from "../../../shared/components/button/Button";
 import IconBoard from "../../../assets/icon-board.svg?react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Spinner } from "../spinner/Spinner";
-import { useModalStore } from "../../../features/modals/stores/useModalStore";
+import { Spinner } from "../../../shared/components/spinner/Spinner";
+import { useModalStore } from "../../../shared/stores/useModalStore";
 
 interface BoardsListProps {
   onBoardSelect?: () => void;

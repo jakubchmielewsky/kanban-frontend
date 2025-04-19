@@ -1,5 +1,5 @@
 import api from "../../lib/axios";
-import { LoginData, RegisterData, User } from "@/types/auth";
+import { LoginData, RegisterData, User } from "@/shared/types/auth";
 
 export const loginUser = async (data: LoginData): Promise<User> => {
   const res = await api.post("/users/login", data);

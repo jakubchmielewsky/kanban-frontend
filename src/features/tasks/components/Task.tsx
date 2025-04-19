@@ -1,5 +1,5 @@
-import { useModalStore } from "../../../features/modals/stores/useModalStore";
-import { Task as TaskType } from "../../../types/task";
+import { useModalStore } from "../../../shared/stores/useModalStore";
+import { Task as TaskType } from "../../../shared/types/task";
 
 interface TaskProps {
   task: TaskType;

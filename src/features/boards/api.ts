@@ -1,5 +1,5 @@
 import api from "../../lib/axios";
-import { Board, CreateUpdateBoardDto } from "../../types/board";
+import { Board, CreateUpdateBoardDto } from "../../shared/types/board";
 
 export const fetchAllBoards = async (): Promise<Board[]> => {
   const res = await api.get("/boards");
