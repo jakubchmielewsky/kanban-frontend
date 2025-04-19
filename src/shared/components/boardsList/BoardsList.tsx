@@ -3,6 +3,7 @@ import { Button } from "../button/Button";
 import IconBoard from "../../../assets/icon-board.svg?react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "../spinner/Spinner";
+import { useModalStore } from "../../../features/modals/stores/useModalStore";
 
 interface BoardsListProps {
   onBoardSelect?: () => void;
@@ -12,12 +13,17 @@ export const BoardsList: React.FC<BoardsListProps> = ({ onBoardSelect }) => {
   const boards = useGetBoards();
   const { boardId } = useParams();
   const navigate = useNavigate();
+  const openModal = useModalStore((store) => store.openModal);
 
   if (!boards.data) return <Spinner />;
 
-  const handleClick = (boardId: string) => {
+  const handleSelectBoard = (boardId: string) => {
     navigate(`/boards/${boardId}`);
     if (onBoardSelect) onBoardSelect();
+  };
+
+  const handleCreateBoard = () => {
+    openModal({ name: "ADD_BOARD" });
   };
 
   return (
@@ -39,7 +45,7 @@ export const BoardsList: React.FC<BoardsListProps> = ({ onBoardSelect }) => {
             variant={"menu"}
             className={`text-medium-gray w-full justify-start pl-6`}
             size="l"
-            onClick={() => handleClick(board._id)}
+            onClick={() => handleSelectBoard(board._id)}
             isSelected={board._id === boardId}
           >
             {board.name}
@@ -51,6 +57,7 @@ export const BoardsList: React.FC<BoardsListProps> = ({ onBoardSelect }) => {
         variant="ghost"
         className="text-main-purple pl-6"
         size="l"
+        onClick={handleCreateBoard}
       >
         + Create New Board
       </Button>

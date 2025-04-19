@@ -9,8 +9,6 @@ interface ColumnProps {
 export const Column: React.FC<ColumnProps> = ({ column }) => {
   const tasks = useGetTasks(column._id);
 
-  console.log(tasks);
-
   return (
     <div className="w-[280px]">
       <h3 className="heading-m text-medium-gray my-3 ml-6">
@@ -18,7 +16,7 @@ export const Column: React.FC<ColumnProps> = ({ column }) => {
       </h3>
       <div className="flex flex-col gap-4">
         {tasks.data?.map((task) => {
-          return <Task task={task} />;
+          return <Task task={task} key={task._id} />;
         })}
       </div>
     </div>

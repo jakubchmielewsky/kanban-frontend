@@ -12,6 +12,7 @@ interface TextInputProps {
   isResetVisible?: boolean;
   error?: string;
   setError?: (error: string) => void;
+  className?: string;
 }
 
 export const TextInput: React.FC<TextInputProps> = ({
@@ -23,6 +24,7 @@ export const TextInput: React.FC<TextInputProps> = ({
   isResetVisible = false,
   error,
   setError,
+  className,
 }) => {
   const handleReset = () => {
     onChange("");
@@ -30,7 +32,7 @@ export const TextInput: React.FC<TextInputProps> = ({
   };
 
   return (
-    <div>
+    <div className={className}>
       {label && <TextInputLabel htmlFor={label}>{label}</TextInputLabel>}
       <div className="w-full flex items-center gap-4 mt-1">
         <div className="w-full relative">
