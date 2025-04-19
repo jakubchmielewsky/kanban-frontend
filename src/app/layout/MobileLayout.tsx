@@ -1,3 +1,4 @@
+import { Modal } from "../../features/modals/Modal";
 import { Navbar } from "../../shared/components/navbar/Navbar";
 
 export const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
@@ -7,6 +8,7 @@ export const MobileLayout: React.FC<{ children: React.ReactNode }> = ({
     <div className="flex flex-col h-screen">
       <Navbar />
       <main className="flex-grow overflow-auto">{children}</main>
+      <Modal />
     </div>
   );
 };

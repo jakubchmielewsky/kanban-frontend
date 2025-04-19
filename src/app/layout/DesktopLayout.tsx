@@ -1,5 +1,6 @@
 import { Sidebar } from "../../shared/components/sidebar/Sidebar";
 import { Navbar } from "../../shared/components/navbar/Navbar";
+import { Modal } from "../../features/modals/Modal";
 
 export const DesktopLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -13,6 +14,7 @@ export const DesktopLayout: React.FC<{ children: React.ReactNode }> = ({
           {children}
         </main>
       </div>
+      <Modal />
     </div>
   );
 };
