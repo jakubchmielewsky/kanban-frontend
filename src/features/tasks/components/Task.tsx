@@ -9,7 +9,7 @@ export const Task: React.FC<TaskProps> = ({ task }) => {
   const openModal = useModalStore((store) => store.openModal);
 
   const handleClick = () => {
-    openModal({ name: "VIEW_TASK", payload: { taskId: task._id } });
+    openModal({ name: "VIEW_TASK", payload: task });
   };
 
   return (

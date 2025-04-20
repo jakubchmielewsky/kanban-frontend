@@ -1,6 +1,7 @@
 import { createPortal } from "react-dom";
 import { useModalStore } from "../stores/useModalStore";
 import { AddBoard } from "../../features/boards/modals/AddBoardModal";
+import { ViewTask } from "../../features/tasks/modals/ViewTask";
 
 export const Modal: React.FC = () => {
   const current = useModalStore((store) => store.current);
@@ -9,7 +10,7 @@ export const Modal: React.FC = () => {
   if (!current) return null;
 
   const MODAL_COMPONENTS = {
-    VIEW_TASK: <div>kghfihgfigfitgf</div>,
+    VIEW_TASK: <ViewTask task={current.payload} />,
     ADD_BOARD: <AddBoard />,
   };
 
@@ -19,7 +20,7 @@ export const Modal: React.FC = () => {
       onClick={closeModal}
     >
       <div
-        className="bg-white w-full mx-8 px-4 py-6 rounded-lg shadow-xl max-w-[420px]"
+        className="bg-white w-full mx-8 px-6 py-8 rounded-lg shadow-xl max-w-[420px]"
         onClick={(e) => e.stopPropagation()}
       >
         {MODAL_COMPONENTS[current.name]}
