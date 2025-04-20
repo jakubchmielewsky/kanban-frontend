@@ -10,7 +10,7 @@ export const Modal: React.FC = () => {
   if (!current) return null;
 
   const MODAL_COMPONENTS = {
-    VIEW_TASK: <ViewTask task={current.payload} />,
+    VIEW_TASK: <ViewTask payload={current.payload} />,
     ADD_BOARD: <AddBoard />,
   };
 

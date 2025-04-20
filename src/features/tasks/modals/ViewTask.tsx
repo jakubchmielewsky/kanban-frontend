@@ -5,16 +5,12 @@ import { useGetSubtasks } from "../../subtasks/hooks/useGetSubtasks";
 import { Subtask } from "../../subtasks/components/Subtask";
 
 interface ViewTaskModalProps {
-  task: Task;
+  payload: { task: Task; completedSubtasks: number; totalSubtasks: number };
 }
 
-export const ViewTask: React.FC<ViewTaskModalProps> = ({ task }) => {
+export const ViewTask: React.FC<ViewTaskModalProps> = ({ payload }) => {
+  const { task, completedSubtasks, totalSubtasks } = payload;
   const subtasks = useGetSubtasks(task._id);
-
-  const completedSubtasks = subtasks.data?.filter(
-    (subtask) => subtask.isCompleted
-  ).length;
-  const totalSubtasks = subtasks.data?.length || 0;
 
   return (
     <div>
