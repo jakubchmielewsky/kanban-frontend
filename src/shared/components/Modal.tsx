@@ -2,6 +2,7 @@ import { createPortal } from "react-dom";
 import { useModalStore } from "../stores/useModalStore";
 import { AddBoard } from "../../features/boards/modals/AddBoardModal";
 import { ViewTask } from "../../features/tasks/modals/ViewTask";
+import { AddNewTask } from "../../features/tasks/modals/AddNewTask";
 
 export const Modal: React.FC = () => {
   const current = useModalStore((store) => store.current);
@@ -10,8 +11,9 @@ export const Modal: React.FC = () => {
   if (!current) return null;
 
   const MODAL_COMPONENTS = {
-    VIEW_TASK: <ViewTask payload={current.payload} />,
     ADD_BOARD: <AddBoard />,
+    VIEW_TASK: <ViewTask payload={current.payload} />,
+    ADD_TASK: <AddNewTask />,
   };
 
   return createPortal(

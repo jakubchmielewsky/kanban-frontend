@@ -5,3 +5,9 @@ export interface Task {
   status: boolean;
   column: string;
 }
+
+export interface TaskDto {
+  title: string;
+  description: string;
+  column: string;
+}

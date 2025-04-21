@@ -7,12 +7,18 @@ import { Button } from "../button/Button";
 import { useGetBoards } from "../../../features/boards/hooks/useGetBoards";
 import { useParams } from "react-router-dom";
 import { NavbarMobileDropdown } from "./NavbarMobileDropdown";
+import { useModalStore } from "../../stores/useModalStore";
 
 export const Navbar: React.FC = () => {
   const isMobile = useIsMobile();
   const boards = useGetBoards();
   const { boardId } = useParams();
   const selectedBoard = boards.data?.find((board) => board._id === boardId);
+  const openModal = useModalStore((store) => store.openModal);
+
+  const handleAddNewTask = () => {
+    openModal({ name: "ADD_TASK" });
+  };
 
   return (
     <nav
@@ -38,7 +44,11 @@ export const Navbar: React.FC = () => {
 
       {/* Group 2 */}
       <div className="flex items-center gap-x-2">
-        <Button size={isMobile ? "s" : "l"} iconLeft={isMobile && <IconAdd />}>
+        <Button
+          size={isMobile ? "s" : "l"}
+          iconLeft={isMobile && <IconAdd />}
+          onClick={handleAddNewTask}
+        >
           {!isMobile && "+ Add New Task"}
         </Button>
         <Button variant="ghost">

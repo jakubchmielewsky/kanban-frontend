@@ -1,5 +1,5 @@
 import api from "../../lib/axios";
-import { Task } from "../../shared/types/task";
+import { Task, TaskDto } from "../../shared/types/task";
 
 export const fetchTasks = async (columnId: string): Promise<Task[]> => {
   const res = await api.get(`/columns/${columnId}/tasks`);
@@ -17,4 +17,12 @@ export const updateTaskStatus = async (
 ): Promise<Task> => {
   const res = await api.patch(`/tasks/${taskId}`, { column: targetColumnId });
   return res.data.data.data;
+};
+
+export const createTask = async (newTask: TaskDto): Promise<Task> => {
+  const res = await api.post(`/columns/${newTask.column}/tasks`, {
+    title: newTask.title,
+    description: newTask.description,
+  });
+  return res.data.data.doc;
 };

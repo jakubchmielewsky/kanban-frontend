@@ -28,7 +28,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
   return (
     <div className="relative">
       <div
-        className="flex items-center justify-between ring ring-main-purple w-full rounded-sm px-4 py-2 cursor-pointer body-l"
+        className={`flex items-center justify-between ring ${
+          isOpen ? "ring-main-purple" : "ring ring-lines-light"
+        } w-full rounded-sm px-4 py-2 cursor-pointer body-l`}
         onClick={handleToggleIsOpen}
         role="button"
       >

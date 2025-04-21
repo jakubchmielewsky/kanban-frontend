@@ -7,7 +7,7 @@ export const TextInputLabel: React.FC<TextInputLabelProps> = ({
   htmlFor,
   children,
 }) => (
-  <label htmlFor={htmlFor} className="heading-m text-medium-gray">
+  <label htmlFor={htmlFor} className="body-l text-medium-gray">
     {children}
   </label>
 );

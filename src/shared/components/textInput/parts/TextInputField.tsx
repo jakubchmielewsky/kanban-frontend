@@ -18,7 +18,7 @@ export const TextInputField: React.FC<TextInputFieldProps> = ({
   <input
     id={id}
     className={`w-full border ${
-      hasError ? "border-red" : "border-medium-gray/25"
+      hasError ? "border-red" : "border-lines-light focus:border-main-purple"
     } rounded-[8px] px-4 py-2 text-sm text-black placeholder:text-medium-gray focus:outline-none body-l`}
     type={type}
     value={value}

@@ -1,6 +1,6 @@
 export const buttonVariantClasses = {
   primary: "bg-main-purple text-white hover:bg-main-purple-hover",
-  secondary: "bg-light-gray text-main-purple hover:bg-main-purple/10",
+  secondary: "bg-main-purple/10 text-main-purple hover:bg-main-purple/25",
   destructive: "bg-red text-white hover:bg-red-hover",
   ghost: "bg-transparent",
   menu: "",

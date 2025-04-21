@@ -13,6 +13,7 @@ interface TextInputProps {
   error?: string;
   setError?: (error: string) => void;
   className?: string;
+  onReset?: () => void;
 }
 
 export const TextInput: React.FC<TextInputProps> = ({
@@ -25,10 +26,12 @@ export const TextInput: React.FC<TextInputProps> = ({
   error,
   setError,
   className,
+  onReset,
 }) => {
   const handleReset = () => {
     onChange("");
     if (error && setError) setError("");
+    if (onReset) onReset();
   };
 
   return (
