@@ -21,6 +21,7 @@ export const useUpdateTaskStatus = () => {
       queryClient.invalidateQueries({
         queryKey: ["tasks", variables.targetColumnId],
       });
+      queryClient.invalidateQueries({ queryKey: ["task"] });
     },
   });
 };

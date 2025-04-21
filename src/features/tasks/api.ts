@@ -6,6 +6,11 @@ export const fetchTasks = async (columnId: string): Promise<Task[]> => {
   return res.data.data.data;
 };
 
+export const getTask = async (taskId: string): Promise<Task> => {
+  const res = await api.get(`/tasks/${taskId}`);
+  return res.data.data.data;
+};
+
 export const updateTaskStatus = async (
   taskId: string,
   targetColumnId: string

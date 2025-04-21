@@ -1,9 +1,7 @@
-import { Task } from "./task";
-
 export type ModalType =
   | {
       name: "VIEW_TASK";
-      payload: { task: Task; completedSubtasks: number; totalSubtasks: number };
+      payload: { taskId: string };
     }
   | { name: "ADD_TASK"; payload: { taskId: string } }
   | { name: "EDIT_TASK"; payload: { taskId: string } }

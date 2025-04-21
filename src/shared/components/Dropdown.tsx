@@ -2,7 +2,6 @@ import { useState } from "react";
 import IconChevronDown from "../../assets/icon-chevron-down.svg?react";
 import IconChevronUp from "../../assets/icon-chevron-up.svg?react";
 import { Column } from "../types/column";
-import { useModalStore } from "../stores/useModalStore";
 
 interface DropdownProps {
   currentValue: Column | null;
@@ -16,7 +15,6 @@ export const Dropdown: React.FC<DropdownProps> = ({
   setValue,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const closeModal = useModalStore((store) => store.closeModal);
 
   const handleToggleIsOpen = () => {
     setIsOpen((prev) => !prev);
@@ -25,7 +23,6 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const handleSetValue = (value: Column) => {
     setValue(value);
     setIsOpen(false);
-    closeModal();
   };
 
   return (
@@ -33,6 +30,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       <div
         className="flex items-center justify-between ring ring-main-purple w-full rounded-sm px-4 py-2 cursor-pointer body-l"
         onClick={handleToggleIsOpen}
+        role="button"
       >
         {currentValue?.name}
         {isOpen ? <IconChevronUp /> : <IconChevronDown />}

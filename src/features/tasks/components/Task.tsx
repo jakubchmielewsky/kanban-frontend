@@ -1,7 +1,6 @@
 import { useGetSubtasks } from "../../subtasks/hooks/useGetSubtasks";
 import { useModalStore } from "../../../shared/stores/useModalStore";
 import { Task as TaskType } from "../../../shared/types/task";
-import { useMemo } from "react";
 
 interface TaskProps {
   task: TaskType;
@@ -11,18 +10,15 @@ export const Task: React.FC<TaskProps> = ({ task }) => {
   const openModal = useModalStore((store) => store.openModal);
   const subtasks = useGetSubtasks(task._id);
 
-  const { completedSubtasks, totalSubtasks } = useMemo(() => {
-    const completedSubtasks = subtasks.data?.filter(
-      (subtask) => subtask.isCompleted
-    ).length;
-    const totalSubtasks = subtasks.data?.length || 0;
-    return { completedSubtasks, totalSubtasks };
-  }, [subtasks.data]);
+  const completedSubtasks = subtasks.data?.filter(
+    (subtask) => subtask.isCompleted
+  ).length;
+  const totalSubtasks = subtasks.data?.length || 0;
 
   const handleOpenViewTaskModal = () => {
     openModal({
       name: "VIEW_TASK",
-      payload: { task, completedSubtasks, totalSubtasks },
+      payload: { taskId: task._id },
     });
   };
 

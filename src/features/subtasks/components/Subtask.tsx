@@ -1,12 +1,13 @@
 import { Subtask as SubtaskType } from "../../../shared/types/subtask";
 import IconCheck from "../../../assets/icon-check.svg?react";
 import { useUpdateSubtask } from "../hooks/useUpdateSubtask";
+import React from "react";
 
 interface SubtaskProps {
   subtask: SubtaskType;
 }
 
-export const Subtask: React.FC<SubtaskProps> = ({ subtask }) => {
+const SubtaskComponent: React.FC<SubtaskProps> = ({ subtask }) => {
   const updateSubtaskMutation = useUpdateSubtask();
 
   const handleToggleCompleteSubtask = () => {
@@ -42,3 +43,5 @@ export const Subtask: React.FC<SubtaskProps> = ({ subtask }) => {
     </button>
   );
 };
+
+export const Subtask = React.memo(SubtaskComponent);
