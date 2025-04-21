@@ -1,4 +1,4 @@
-import { Sidebar } from "../../shared/components/sidebar/Sidebar";
+import { Sidebar } from "../../shared/components/Sidebar";
 import { Navbar } from "../../shared/components/navbar/Navbar";
 import { Modal } from "../../shared/components/Modal";
 

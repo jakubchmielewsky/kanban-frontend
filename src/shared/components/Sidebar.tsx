@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Button } from "../button/Button";
-import IconShowSidebar from "../../../assets/icon-show-sidebar.svg?react";
-import IconHideSidebar from "../../../assets/icon-hide-sidebar.svg?react";
-import { BoardsList } from "../../../features/boards/components/BoardsList";
+import { Button } from "./button/Button";
+import IconShowSidebar from "../../assets/icon-show-sidebar.svg?react";
+import IconHideSidebar from "../../assets/icon-hide-sidebar.svg?react";
+import { BoardsList } from "../../features/boards/components/BoardsList";
 
 export const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
