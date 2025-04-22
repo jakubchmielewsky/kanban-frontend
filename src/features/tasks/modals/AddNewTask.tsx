@@ -1,53 +1,39 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { TextInput } from "../../../shared/components/textInput/TextInput";
 import { Button } from "../../../shared/components/button/Button";
-import { Dropdown } from "../../../shared/components/Dropdown";
 import { useGetColumns } from "../../columns/hooks/useGetColumns";
 import { Column } from "../../../shared/types/column";
 import { useCreateTask } from "../hooks/useCreateTask";
 import { useCreateSubtask } from "../../../features/subtasks/hooks/useCreateSubtask";
-import { SubtaskFormData } from "../../../shared/types/subtask";
-import { TaskDto } from "../../../shared/types/task";
+import { AddSubtasksList } from "../components/AddSubtasksList";
+import { SubtaskStatusDropdown } from "../components/SubtaskStatusDropdown";
+import { useSubtasksList } from "../hooks/useSubtasksList";
 
 export const AddNewTask: React.FC = () => {
   const { boardId } = useParams();
-  const columns = useGetColumns(boardId || "");
-  const columnsData = useMemo(() => columns.data || [], [columns.data]);
+  const columnsQuery = useGetColumns(boardId!); //possibly unsafe '!'
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [subtasks, setSubtasks] = useState<SubtaskFormData[]>([]);
   const [currentValue, setCurrentValue] = useState<Column | null>(null);
 
   const createTaskMutation = useCreateTask();
   const createSubtaskMutation = useCreateSubtask();
 
+  const {
+    handleAddSubtask,
+    handleSubtaskChange,
+    handleSubtaskRemove,
+    subtasks,
+    setSubtasks,
+  } = useSubtasksList();
+
   useEffect(() => {
-    if (columnsData.length && !currentValue) {
-      setCurrentValue(columnsData[0]);
+    if (columnsQuery.data?.length && !currentValue) {
+      setCurrentValue(columnsQuery.data[0]);
     }
-  }, [columnsData, currentValue]);
-
-  const handleSubtaskChange = (id: number, value: string) => {
-    setSubtasks((prev) =>
-      prev.map((subtask) =>
-        subtask.tempId === id ? { ...subtask, title: value } : subtask
-      )
-    );
-  };
-
-  const handleSubtaskRemove = (id: number) => {
-    setSubtasks((prev) => prev.filter((subtask) => subtask.tempId !== id));
-  };
-
-  const handleAddSubtask = () => {
-    const newSubtask: SubtaskFormData = {
-      title: "",
-      tempId: Date.now() + Math.random(),
-    };
-    setSubtasks((prev) => [...prev, newSubtask]);
-  };
+  }, [columnsQuery.data, currentValue]);
 
   const handleCreateTask = async () => {
     if (!title.trim() || !currentValue) return;
@@ -57,23 +43,21 @@ export const AddNewTask: React.FC = () => {
         title,
         description,
         column: currentValue._id,
-      } satisfies TaskDto);
+      });
 
       await Promise.all(
-        subtasks
-          .filter((s) => s.title.trim() !== "")
-          .map((subtask) =>
-            createSubtaskMutation.mutateAsync({
-              title: subtask.title,
-              task: newTask._id,
-            })
-          )
+        subtasks.map((subtask) =>
+          createSubtaskMutation.mutateAsync({
+            title: subtask.title,
+            task: newTask._id,
+          })
+        )
       );
 
       setTitle("");
       setDescription("");
       setSubtasks([]);
-      setCurrentValue(columnsData[0] || null);
+      setCurrentValue((columnsQuery.data && columnsQuery.data[0]) || null);
     } catch (error) {
       console.error(error);
     }
@@ -91,42 +75,18 @@ export const AddNewTask: React.FC = () => {
         onChange={setDescription}
       />
 
-      <div>
-        {subtasks.length > 0 && (
-          <h5 className="text-medium-gray body-l">Subtasks</h5>
-        )}
-        {subtasks.map((subtask) => (
-          <TextInput
-            placeholder="Subtask title"
-            className="mb-2"
-            key={subtask.tempId}
-            value={subtask.title}
-            isResetVisible
-            onChange={(value) => handleSubtaskChange(subtask.tempId, value)}
-            onReset={() => handleSubtaskRemove(subtask.tempId)}
-          />
-        ))}
+      <AddSubtasksList
+        subtasks={subtasks}
+        onAdd={handleAddSubtask}
+        onChange={handleSubtaskChange}
+        onRemove={handleSubtaskRemove}
+      />
 
-        <Button
-          variant="secondary"
-          className="w-full"
-          onClick={handleAddSubtask}
-        >
-          + Add New Subtask
-        </Button>
-      </div>
-
-      <div>
-        <h5 className="body-m text-medium-gray">Status</h5>
-
-        {columnsData.length > 0 && currentValue && (
-          <Dropdown
-            options={columnsData}
-            currentValue={currentValue}
-            setValue={setCurrentValue}
-          />
-        )}
-      </div>
+      <SubtaskStatusDropdown
+        columns={columnsQuery.data || null}
+        currentValue={currentValue}
+        setCurrentValue={setCurrentValue}
+      />
 
       <Button variant="primary" onClick={handleCreateTask}>
         Create Task

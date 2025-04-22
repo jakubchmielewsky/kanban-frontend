@@ -27,10 +27,7 @@ export const ViewTask: React.FC<ViewTaskModalProps> = ({ payload }) => {
     [subtasks.data]
   );
 
-  const totalSubtasks = useMemo(
-    () => subtasks.data?.length || 0,
-    [subtasks.data]
-  );
+  const totalSubtasks = subtasks.data?.length || 0;
 
   const [selectedColumn, setSelectedColumn] = useState<Column | null>(null);
 
