@@ -12,5 +12,6 @@ export interface SubtaskDto {
 
 export interface SubtaskFormData {
   title: string;
-  tempId: number;
+  tempId?: number;
+  _id?: string;
 }

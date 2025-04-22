@@ -8,6 +8,8 @@ import { useGetBoards } from "../../../features/boards/hooks/useGetBoards";
 import { useParams } from "react-router-dom";
 import { NavbarMobileDropdown } from "./NavbarMobileDropdown";
 import { useModalStore } from "../../stores/useModalStore";
+import { ContextMenu } from "../ContextMenu";
+import { useContextMenu } from "../../hooks/useContextMenu";
 
 export const Navbar: React.FC = () => {
   const isMobile = useIsMobile();
@@ -15,6 +17,7 @@ export const Navbar: React.FC = () => {
   const { boardId } = useParams();
   const selectedBoard = boards.data?.find((board) => board._id === boardId);
   const openModal = useModalStore((store) => store.openModal);
+  const { isVisible, open, close, coords } = useContextMenu();
 
   const handleAddNewTask = () => {
     openModal({ name: "ADD_TASK" });
@@ -51,10 +54,20 @@ export const Navbar: React.FC = () => {
         >
           {!isMobile && "+ Add New Task"}
         </Button>
-        <Button variant="ghost">
+        <button
+          className="p-4 cursor-pointer"
+          onClick={(e: React.MouseEvent) => open(e)}
+        >
           <IconVerticalEllipsis />
-        </Button>
+        </button>
       </div>
+      {isVisible && (
+        <ContextMenu x={coords.x} y={coords.y} close={close}>
+          <li>
+            <button></button>
+          </li>
+        </ContextMenu>
+      )}
     </nav>
   );
 };

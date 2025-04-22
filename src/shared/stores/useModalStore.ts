@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { ModalType } from "../types/types";
+import { ModalType } from "../types/modals";
 
 interface ModalState {
   current: ModalType | null;
