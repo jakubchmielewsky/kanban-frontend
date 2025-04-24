@@ -5,12 +5,8 @@ export interface Subtask {
   isCompleted: boolean;
 }
 
-export interface SubtaskDto {
-  title: string;
-  task: string;
-}
-
 export interface SubtaskFormData {
   title: string;
   tempId: number;
+  _id?: string;
 }

@@ -45,7 +45,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
     <div className="inset-0 fixed top-0 left-0" onClick={() => close()}>
       <div
         ref={menuRef}
-        className="fixed bg-white rounded-md shadow-lg border border-lines-light py-6 px-4 w-30"
+        className="fixed bg-white rounded-md shadow-lg border border-lines-light p-4 w-30"
         style={{ top: position.y, left: position.x }}
         onClick={(e) => e.stopPropagation()}
       >

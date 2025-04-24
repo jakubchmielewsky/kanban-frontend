@@ -1,4 +1,4 @@
-import { Subtask, SubtaskDto } from "../../shared/types/subtask";
+import { Subtask } from "../../shared/types/subtask";
 import api from "../../lib/axios";
 
 export const fetchSubtasks = async (taskId: string): Promise<Subtask[]> => {
@@ -16,11 +16,17 @@ export const updateSubtask = async (
   return res.data.data.data;
 };
 
+export const deleteSubtask = async (subtaskId: string): Promise<void> => {
+  const res = await api.delete(`/subtasks/${subtaskId}`);
+  return res.data.data;
+};
+
 export const createSubtask = async (
-  newSubtask: SubtaskDto
+  title: string,
+  task: string
 ): Promise<Subtask> => {
-  const res = await api.post(`/tasks/${newSubtask.task}/subtasks`, {
-    title: newSubtask.title,
+  const res = await api.post(`/tasks/${task}/subtasks`, {
+    title: title,
   });
   return res.data.data.data;
 };

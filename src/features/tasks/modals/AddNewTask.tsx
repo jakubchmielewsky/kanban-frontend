@@ -7,8 +7,8 @@ import { Column } from "../../../shared/types/column";
 import { useCreateTask } from "../hooks/useCreateTask";
 import { useCreateSubtask } from "../../../features/subtasks/hooks/useCreateSubtask";
 import { AddSubtasksList } from "../components/AddSubtasksList";
-import { SubtaskStatusDropdown } from "../components/SubtaskStatusDropdown";
 import { useSubtasksList } from "../hooks/useSubtasksList";
+import { Dropdown } from "../../../shared/components/Dropdown";
 
 export const AddNewTask: React.FC = () => {
   const { boardId } = useParams();
@@ -82,11 +82,17 @@ export const AddNewTask: React.FC = () => {
         onRemove={handleSubtaskRemove}
       />
 
-      <SubtaskStatusDropdown
-        columns={columnsQuery.data || null}
-        currentValue={currentValue}
-        setCurrentValue={setCurrentValue}
-      />
+      <div>
+        <h5 className="body-m mb-2 text-medium-gray">Status</h5>
+
+        {columnsQuery.data && columnsQuery.data.length > 0 && currentValue && (
+          <Dropdown
+            options={columnsQuery.data}
+            currentValue={currentValue}
+            setValue={setCurrentValue}
+          />
+        )}
+      </div>
 
       <Button variant="primary" onClick={handleCreateTask}>
         Create Task

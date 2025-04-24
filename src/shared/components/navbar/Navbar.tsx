@@ -17,7 +17,8 @@ export const Navbar: React.FC = () => {
   const { boardId } = useParams();
   const selectedBoard = boards.data?.find((board) => board._id === boardId);
   const openModal = useModalStore((store) => store.openModal);
-  const { isVisible, open, close, coords } = useContextMenu();
+  const { isVisible, openContextMenu, closeContextMenu, coords } =
+    useContextMenu();
 
   const handleAddNewTask = () => {
     openModal({ name: "ADD_TASK" });
@@ -56,13 +57,13 @@ export const Navbar: React.FC = () => {
         </Button>
         <button
           className="p-4 cursor-pointer"
-          onClick={(e: React.MouseEvent) => open(e)}
+          onClick={(e: React.MouseEvent) => openContextMenu(e)}
         >
           <IconVerticalEllipsis />
         </button>
       </div>
       {isVisible && (
-        <ContextMenu x={coords.x} y={coords.y} close={close}>
+        <ContextMenu x={coords.x} y={coords.y} close={closeContextMenu}>
           <li>
             <button></button>
           </li>

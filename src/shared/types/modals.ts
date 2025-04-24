@@ -1,7 +1,7 @@
 export type ModalType =
-  | { name: "ADD_BOARD" }
+  | { name: "ADD_BOARD"; payload: null }
   | { name: "VIEW_TASK"; payload: { taskId: string } }
-  | { name: "ADD_TASK" }
+  | { name: "ADD_TASK"; payload: null }
   | { name: "EDIT_TASK"; payload: { taskId: string } }
   | { name: "DELETE_TASK"; payload: { taskId: string } }
   | { name: "EDIT_BOARD"; payload: { boardId: string } }

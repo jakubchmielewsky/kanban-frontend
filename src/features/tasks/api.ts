@@ -11,11 +11,8 @@ export const getTask = async (taskId: string): Promise<Task> => {
   return res.data.data.data;
 };
 
-export const updateTaskStatus = async (
-  taskId: string,
-  targetColumnId: string
-): Promise<Task> => {
-  const res = await api.patch(`/tasks/${taskId}`, { column: targetColumnId });
+export const updateTask = async (task: Task): Promise<Task> => {
+  const res = await api.patch(`/tasks/${task._id}`, task);
   return res.data.data.data;
 };
 
