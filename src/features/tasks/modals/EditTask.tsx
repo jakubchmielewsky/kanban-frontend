@@ -8,12 +8,14 @@ import { Column } from "../../../shared/types/column";
 import { useGetOneTask } from "../../tasks/hooks/useGetOneTask";
 import { useUpdateTask } from "../hooks/useUpdateTask";
 import { Spinner } from "../../../shared/components/spinner/Spinner";
+import { useModalStore } from "../../../shared/stores/useModalStore";
 
 interface Props {
   payload: { taskId: string };
 }
 
 export const EditTask: React.FC<Props> = ({ payload }) => {
+  const closeModal = useModalStore((s) => s.closeModal);
   const taskQuery = useGetOneTask(payload.taskId);
   const columnsQuery = useGetColumns();
 
@@ -88,17 +90,22 @@ export const EditTask: React.FC<Props> = ({ payload }) => {
   };
 
   const handleSubmit = () => {
-    updateTaskMutation.mutateAsync({
+    if (!selectedColumn) return;
+
+    const payload = {
       task: {
         ...taskQuery.data,
         subtasks: localSubtasks.map((subtask) => ({
           title: subtask.title,
           isCompleted: subtask.isCompleted,
         })),
-        column: selectedColumn?._id as string,
+        column: selectedColumn._id,
       },
       sourceColumnId: taskQuery.data.column,
-    });
+    };
+
+    updateTaskMutation.mutateAsync(payload);
+    closeModal();
   };
 
   return (

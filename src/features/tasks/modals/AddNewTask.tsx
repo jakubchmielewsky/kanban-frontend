@@ -7,8 +7,10 @@ import { useCreateTask } from "../hooks/useCreateTask";
 import { AddSubtasksList } from "../components/AddSubtasksList";
 import { Dropdown } from "../../../shared/components/Dropdown";
 import { Spinner } from "../../../shared/components/spinner/Spinner";
+import { useModalStore } from "../../../shared/stores/useModalStore";
 
 export const AddNewTask: React.FC = () => {
+  const closeModal = useModalStore((s) => s.closeModal);
   const columnsQuery = useGetColumns();
 
   const createTaskMutation = useCreateTask();
@@ -72,6 +74,7 @@ export const AddNewTask: React.FC = () => {
     };
 
     createTaskMutation.mutateAsync(payload);
+    closeModal();
   };
 
   return (

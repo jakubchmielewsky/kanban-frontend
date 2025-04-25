@@ -19,7 +19,7 @@ export const TaskDetails: React.FC<Props> = ({ payload }) => {
   const columnsQuery = useGetColumns();
 
   const updateTaskMutation = useUpdateTask();
-  const { openModal } = useModalStore();
+  const openModal = useModalStore((a) => a.openModal);
   const { isContextMenuVisible, coords, openContextMenu, closeContextMenu } =
     useContextMenu();
 
