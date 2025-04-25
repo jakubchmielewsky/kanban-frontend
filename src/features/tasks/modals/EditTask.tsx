@@ -42,7 +42,7 @@ export const EditTask: React.FC<Props> = ({ payload }) => {
   }, [taskQuery.data, columnsQuery.data, selectedColumn]);
 
   useEffect(() => {
-    if (taskQuery.data?.subtasks && !localSubtasks) {
+    if (taskQuery.data) {
       const normalizedSubtasks = taskQuery.data.subtasks.map((subtask) => ({
         _id: subtask._id ?? crypto.randomUUID(),
         title: subtask.title,
@@ -50,7 +50,7 @@ export const EditTask: React.FC<Props> = ({ payload }) => {
       }));
       setLocalSubtasks(normalizedSubtasks);
     }
-  }, [taskQuery.data?.subtasks, localSubtasks]);
+  }, [taskQuery.data]);
 
   useEffect(() => {
     if (taskQuery.data && !title) setTitle(taskQuery.data.title);
