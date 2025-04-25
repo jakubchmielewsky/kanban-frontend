@@ -4,6 +4,7 @@ import { AddBoard } from "../../features/boards/modals/AddBoardModal";
 import { TaskDetails } from "../../features/tasks/modals/TaskDetails";
 import { AddNewTask } from "../../features/tasks/modals/AddNewTask";
 import { EditTask } from "../../features/tasks/modals/EditTask";
+import { DeleteTask } from "../../features/tasks/modals/DeleteTask";
 
 export const Modal: React.FC = () => {
   const current = useModalStore((store) => store.current);
@@ -25,6 +26,9 @@ export const Modal: React.FC = () => {
       break;
     case "EDIT_TASK":
       modalContent = <EditTask payload={current.payload} />;
+      break;
+    case "DELETE_TASK":
+      modalContent = <DeleteTask payload={current.payload} />;
       break;
     default:
       modalContent = null;

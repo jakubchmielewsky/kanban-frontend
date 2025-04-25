@@ -87,7 +87,7 @@ export const TaskDetails: React.FC<Props> = ({ payload }) => {
             </li>
             <li>
               <button
-                className="text-red cursor-pointer text-left"
+                className="text-red cursor-pointer w-full text-left"
                 onClick={handleOpenDeleteTaskModal}
               >
                 Delete

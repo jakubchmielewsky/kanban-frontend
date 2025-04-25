@@ -27,3 +27,8 @@ export const createTask = async (newTask: NewTask): Promise<Task> => {
   const res = await api.post(`/columns/${newTask.column}/tasks`, newTask);
   return res.data.data.doc;
 };
+
+export const deleteTask = async (taskId: string): Promise<void> => {
+  const res = await api.delete(`/tasks/${taskId}`);
+  return res.data.data;
+};
