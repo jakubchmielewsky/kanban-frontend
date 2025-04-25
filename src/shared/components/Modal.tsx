@@ -5,6 +5,8 @@ import { TaskDetails } from "../../features/tasks/modals/TaskDetails";
 import { AddNewTask } from "../../features/tasks/modals/AddNewTask";
 import { EditTask } from "../../features/tasks/modals/EditTask";
 import { DeleteTask } from "../../features/tasks/modals/DeleteTask";
+import { DeleteBoard } from "../../features/boards/modals/DeleteBoard";
+import { EditBoard } from "../../features/boards/modals/EditBoard";
 
 export const Modal: React.FC = () => {
   const current = useModalStore((store) => store.current);
@@ -29,6 +31,12 @@ export const Modal: React.FC = () => {
       break;
     case "DELETE_TASK":
       modalContent = <DeleteTask payload={current.payload} />;
+      break;
+    case "DELETE_BOARD":
+      modalContent = <DeleteBoard payload={current.payload} />;
+      break;
+    case "EDIT_BOARD":
+      modalContent = <EditBoard payload={current.payload} />;
       break;
     default:
       modalContent = null;

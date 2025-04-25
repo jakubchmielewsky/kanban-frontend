@@ -21,7 +21,8 @@ export const useUpdateTask = () => {
       queryClient.invalidateQueries({
         queryKey: ["tasks", task.column],
       });
-      queryClient.invalidateQueries({ queryKey: ["task"] });
+
+      queryClient.invalidateQueries({ queryKey: ["task", task._id] });
     },
   });
 };

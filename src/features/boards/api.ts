@@ -11,17 +11,14 @@ export const fetchBoard = async (boardId: string): Promise<Board> => {
   return res.data.data.data;
 };
 
-export const updateBoard = async (
-  boardId: string,
-  updatedBoard: CreateUpdateBoardDto
-): Promise<Board> => {
-  const res = await api.patch(`/boards/${boardId}`, updatedBoard);
+export const updateBoard = async (updatedBoard: Board): Promise<Board> => {
+  const res = await api.patch(`/boards/${updatedBoard._id}`, updatedBoard);
   return res.data.data.data;
 };
 
 export const deleteBoard = async (boardId: string): Promise<Board> => {
   const res = await api.delete(`/boards/${boardId}`);
-  return res.data;
+  return res.data.data;
 };
 
 export const createBoard = async (

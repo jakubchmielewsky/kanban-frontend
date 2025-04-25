@@ -10,18 +10,35 @@ import { NavbarMobileDropdown } from "./NavbarMobileDropdown";
 import { useModalStore } from "../../stores/useModalStore";
 import { ContextMenu } from "../ContextMenu";
 import { useContextMenu } from "../../hooks/useContextMenu";
+import { useGetColumns } from "../../../features/columns/hooks/useGetColumns";
 
 export const Navbar: React.FC = () => {
   const isMobile = useIsMobile();
   const boards = useGetBoards();
   const { boardId } = useParams();
-  const selectedBoard = boards.data?.find((board) => board._id === boardId);
+  const selectedBoard =
+    boards.data?.find((board) => board._id === boardId) || null;
   const openModal = useModalStore((store) => store.openModal);
-  const { isVisible, openContextMenu, closeContextMenu, coords } =
+  const { isContextMenuVisible, openContextMenu, closeContextMenu, coords } =
     useContextMenu();
+  const columnsQuery = useGetColumns();
 
   const handleAddNewTask = () => {
     openModal({ name: "ADD_TASK" });
+
+    closeContextMenu();
+  };
+
+  const handleEditBoard = () => {
+    if (!selectedBoard) return;
+    openModal({ name: "EDIT_BOARD", payload: { board: selectedBoard } });
+    closeContextMenu();
+  };
+
+  const handleDeleteBoard = () => {
+    if (!selectedBoard) return;
+    openModal({ name: "DELETE_BOARD", payload: { board: selectedBoard } });
+    closeContextMenu();
   };
 
   return (
@@ -52,6 +69,7 @@ export const Navbar: React.FC = () => {
           size={isMobile ? "s" : "l"}
           iconLeft={isMobile && <IconAdd />}
           onClick={handleAddNewTask}
+          disabled={!(columnsQuery.data && columnsQuery.data.length > 0)}
         >
           {!isMobile && "+ Add New Task"}
         </Button>
@@ -62,10 +80,24 @@ export const Navbar: React.FC = () => {
           <IconVerticalEllipsis />
         </button>
       </div>
-      {isVisible && (
+
+      {isContextMenuVisible && (
         <ContextMenu x={coords.x} y={coords.y} close={closeContextMenu}>
           <li>
-            <button></button>
+            <button
+              className="body-l w-full text-left text-medium-gray cursor-pointer"
+              onClick={handleEditBoard}
+            >
+              Edit Board
+            </button>
+          </li>
+          <li>
+            <button
+              className="body-l w-full text-left text-red cursor-pointer"
+              onClick={handleDeleteBoard}
+            >
+              Delete Board
+            </button>
           </li>
         </ContextMenu>
       )}

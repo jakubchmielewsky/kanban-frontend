@@ -3,7 +3,7 @@ import { getTask } from "../api";
 
 export const useGetOneTask = (taskId: string) => {
   return useQuery({
-    queryKey: ["task"],
+    queryKey: ["task", taskId],
     queryFn: () => getTask(taskId),
     staleTime: 1000 * 60 * 5,
   });
