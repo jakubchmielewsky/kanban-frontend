@@ -9,5 +9,6 @@ export const useGetColumns = () => {
     queryFn: () => fetchAllColumns(boardId as string),
     staleTime: 1000 * 60 * 5,
     retry: true,
+    enabled: !!boardId,
   });
 };
