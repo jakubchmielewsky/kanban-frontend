@@ -1,12 +1,9 @@
 import { Column } from "../../../features/columns/components/Column";
 import { Button } from "../../../shared/components/button/Button";
 import { useGetColumns } from "../../columns/hooks/useGetColumns";
-import { useParams } from "react-router-dom";
 
 export const Board: React.FC = () => {
-  const { boardId } = useParams();
-
-  const columns = useGetColumns(boardId || "");
+  const columns = useGetColumns();
 
   if (!columns.data) return null;
 

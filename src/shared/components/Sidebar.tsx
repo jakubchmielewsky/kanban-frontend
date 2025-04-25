@@ -1,19 +1,11 @@
-import { useState } from "react";
 import { Button } from "./button/Button";
 import IconShowSidebar from "../../assets/icon-show-sidebar.svg?react";
 import IconHideSidebar from "../../assets/icon-hide-sidebar.svg?react";
 import { BoardsList } from "../../features/boards/components/BoardsList";
+import { useSidebarStore } from "../stores/useSidebarStore";
 
 export const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleShowSidebar = () => {
-    setIsOpen(true);
-  };
-
-  const handleHideSidebar = () => {
-    setIsOpen(false);
-  };
+  const { isOpen, showSidebar, hideSidebar } = useSidebarStore();
 
   return (
     <aside
@@ -33,7 +25,7 @@ export const Sidebar = () => {
           iconLeft={<IconHideSidebar />}
           size="l"
           variant="ghost"
-          onClick={handleHideSidebar}
+          onClick={hideSidebar}
         >
           Hide Sidebar
         </Button>
@@ -44,7 +36,7 @@ export const Sidebar = () => {
         className={`absolute bottom-10 translate-x-full right-0`}
         isSelected={true}
         size="l"
-        onClick={handleShowSidebar}
+        onClick={showSidebar}
         hidden={isOpen}
       >
         <IconShowSidebar />
