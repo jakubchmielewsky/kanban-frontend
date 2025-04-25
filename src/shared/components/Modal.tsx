@@ -11,12 +11,24 @@ export const Modal: React.FC = () => {
 
   if (!current) return null;
 
-  const MODAL_COMPONENTS = {
-    ADD_BOARD: <AddBoard />,
-    TASK_DETAILS: <TaskDetails payload={current.payload} />,
-    ADD_TASK: <AddNewTask />,
-    EDIT_TASK: <EditTask payload={current.payload} />,
-  };
+  let modalContent;
+
+  switch (current.name) {
+    case "ADD_BOARD":
+      modalContent = <AddBoard />;
+      break;
+    case "TASK_DETAILS":
+      modalContent = <TaskDetails payload={current.payload} />;
+      break;
+    case "ADD_TASK":
+      modalContent = <AddNewTask />;
+      break;
+    case "EDIT_TASK":
+      modalContent = <EditTask payload={current.payload} />;
+      break;
+    default:
+      modalContent = null;
+  }
 
   return createPortal(
     <div
@@ -27,7 +39,7 @@ export const Modal: React.FC = () => {
         className="bg-white w-full mx-8 px-6 py-8 rounded-lg shadow-xl max-w-[420px]"
         onClick={(e) => e.stopPropagation()}
       >
-        {MODAL_COMPONENTS[current.name]}
+        {modalContent}
       </div>
     </div>,
     document.body
