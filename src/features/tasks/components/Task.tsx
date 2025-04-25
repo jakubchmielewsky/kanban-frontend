@@ -1,23 +1,22 @@
-import { useGetSubtasks } from "../../subtasks/hooks/useGetSubtasks";
 import { useModalStore } from "../../../shared/stores/useModalStore";
 import { Task as TaskType } from "../../../shared/types/task";
 
-interface TaskProps {
+interface Props {
   task: TaskType;
 }
 
-export const Task: React.FC<TaskProps> = ({ task }) => {
+export const Task: React.FC<Props> = ({ task }) => {
   const openModal = useModalStore((store) => store.openModal);
-  const subtasks = useGetSubtasks(task._id);
 
-  const completedSubtasks = subtasks.data?.filter(
-    (subtask) => subtask.isCompleted
-  ).length;
-  const totalSubtasks = subtasks.data?.length || 0;
+  const totalSubtasks = task.subtasks.length;
+  const completedSubtasks = task.subtasks.reduce(
+    (completed, subtask) => completed + (subtask.isCompleted ? 1 : 0),
+    0
+  );
 
   const handleOpenViewTaskModal = () => {
     openModal({
-      name: "VIEW_TASK",
+      name: "TASK_DETAILS",
       payload: { taskId: task._id },
     });
   };

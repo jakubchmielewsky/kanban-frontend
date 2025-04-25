@@ -1,66 +1,77 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { TextInput } from "../../../shared/components/textInput/TextInput";
 import { Button } from "../../../shared/components/button/Button";
 import { useGetColumns } from "../../columns/hooks/useGetColumns";
 import { Column } from "../../../shared/types/column";
 import { useCreateTask } from "../hooks/useCreateTask";
-import { useCreateSubtask } from "../../../features/subtasks/hooks/useCreateSubtask";
 import { AddSubtasksList } from "../components/AddSubtasksList";
-import { useSubtasksList } from "../hooks/useSubtasksList";
 import { Dropdown } from "../../../shared/components/Dropdown";
+import { Spinner } from "../../../shared/components/spinner/Spinner";
 
 export const AddNewTask: React.FC = () => {
-  const { boardId } = useParams();
-  const columnsQuery = useGetColumns(boardId!); //possibly unsafe '!'
+  const columnsQuery = useGetColumns();
+
+  const createTaskMutation = useCreateTask();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [currentValue, setCurrentValue] = useState<Column | null>(null);
-
-  const createTaskMutation = useCreateTask();
-  const createSubtaskMutation = useCreateSubtask();
-
-  const {
-    handleAddSubtask,
-    handleSubtaskChange,
-    handleSubtaskRemove,
-    subtasks,
-    setSubtasks,
-  } = useSubtasksList();
+  const [selectedColumn, setSelectedColumn] = useState<Column | null>();
+  const [localSubtasks, setLocalSubtasks] = useState<
+    {
+      _id: string;
+      title: string;
+      isCompleted: boolean;
+    }[]
+  >([]);
 
   useEffect(() => {
-    if (columnsQuery.data?.length && !currentValue) {
-      setCurrentValue(columnsQuery.data[0]);
-    }
-  }, [columnsQuery.data, currentValue]);
+    if (columnsQuery.data && !selectedColumn)
+      setSelectedColumn(columnsQuery.data[0] ?? null);
+  }, [columnsQuery.data, selectedColumn]);
 
-  const handleCreateTask = async () => {
-    if (!title.trim() || !currentValue) return;
+  if (columnsQuery.isLoading) return <Spinner size="xl" />;
+  if (!columnsQuery.data) return null;
 
-    try {
-      const newTask = await createTaskMutation.mutateAsync({
-        title,
-        description,
-        column: currentValue._id,
-      });
+  const handleAddSubtask = () => {
+    const newLocalSubtasks = [
+      ...localSubtasks,
+      { _id: crypto.randomUUID(), title: "", isCompleted: false },
+    ];
+    setLocalSubtasks(newLocalSubtasks);
+  };
 
-      await Promise.all(
-        subtasks.map((subtask) =>
-          createSubtaskMutation.mutateAsync({
-            title: subtask.title,
-            task: newTask._id,
-          })
-        )
-      );
+  const handleSubtaskChange = (_id: string, value: string) => {
+    const newLocalSubtasks = localSubtasks.map((subtask) =>
+      subtask._id === _id ? { ...subtask, title: value } : subtask
+    );
+    setLocalSubtasks(newLocalSubtasks);
+  };
 
-      setTitle("");
-      setDescription("");
-      setSubtasks([]);
-      setCurrentValue((columnsQuery.data && columnsQuery.data[0]) || null);
-    } catch (error) {
-      console.error(error);
-    }
+  const handleSubtaskRemove = (_id: string) => {
+    const newLocalSubtasks = localSubtasks.filter(
+      (subtask) => subtask._id !== _id
+    );
+    setLocalSubtasks(newLocalSubtasks);
+  };
+
+  const handleSelectColumn = (column: Column) => {
+    setSelectedColumn(column);
+  };
+
+  const handleSubmit = () => {
+    if (!selectedColumn) return;
+
+    const payload = {
+      title,
+      description,
+      subtasks: localSubtasks.map((subtask) => ({
+        title: subtask.title,
+        isCompleted: subtask.isCompleted,
+      })),
+      column: selectedColumn._id,
+    };
+
+    createTaskMutation.mutateAsync(payload);
   };
 
   return (
@@ -76,7 +87,7 @@ export const AddNewTask: React.FC = () => {
       />
 
       <AddSubtasksList
-        subtasks={subtasks}
+        subtasks={localSubtasks}
         onAdd={handleAddSubtask}
         onChange={handleSubtaskChange}
         onRemove={handleSubtaskRemove}
@@ -85,16 +96,16 @@ export const AddNewTask: React.FC = () => {
       <div>
         <h5 className="body-m mb-2 text-medium-gray">Status</h5>
 
-        {columnsQuery.data && columnsQuery.data.length > 0 && currentValue && (
+        {columnsQuery.data && columnsQuery.data.length > 0 && (
           <Dropdown
             options={columnsQuery.data}
-            currentValue={currentValue}
-            setValue={setCurrentValue}
+            currentValue={selectedColumn ?? null}
+            handleSelect={handleSelectColumn}
           />
         )}
       </div>
 
-      <Button variant="primary" onClick={handleCreateTask}>
+      <Button variant="primary" onClick={handleSubmit}>
         Create Task
       </Button>
     </div>

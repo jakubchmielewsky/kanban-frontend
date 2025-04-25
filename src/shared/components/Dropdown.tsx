@@ -6,13 +6,13 @@ import { Column } from "../types/column";
 interface DropdownProps {
   currentValue: Column | null;
   options: Column[];
-  setValue: (value: Column) => void;
+  handleSelect: (column: Column) => void;
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
   currentValue,
   options,
-  setValue,
+  handleSelect,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -21,7 +21,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   };
 
   const handleSetValue = (value: Column) => {
-    setValue(value);
+    handleSelect(value);
     setIsOpen(false);
   };
 

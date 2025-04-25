@@ -5,5 +5,6 @@ export const useGetOneTask = (taskId: string) => {
   return useQuery({
     queryKey: ["task"],
     queryFn: () => getTask(taskId),
+    staleTime: 1000 * 60 * 5,
   });
 };

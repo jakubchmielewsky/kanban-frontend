@@ -1,11 +1,14 @@
 import { Button } from "../../../shared/components/button/Button";
 import { TextInput } from "../../../shared/components/textInput/TextInput";
-import { SubtaskFormData } from "../../../shared/types/subtask";
 
 interface Props {
-  subtasks: SubtaskFormData[];
-  onChange: (id: number, value: string) => void;
-  onRemove: (id: number) => void;
+  subtasks: {
+    _id: string;
+    title: string;
+    isCompleted: boolean;
+  }[];
+  onChange: (_id: string, value: string) => void;
+  onRemove: (_id: string) => void;
   onAdd: () => void;
 }
 
@@ -24,11 +27,11 @@ export const AddSubtasksList: React.FC<Props> = ({
         <TextInput
           placeholder="Subtask title"
           className="mb-2"
-          key={subtask.tempId}
+          key={subtask._id}
           value={subtask.title}
           isResetVisible
-          onChange={(value) => onChange(subtask.tempId, value)}
-          onReset={() => onRemove(subtask.tempId)}
+          onChange={(value) => onChange(subtask._id, value)}
+          onReset={() => onRemove(subtask._id)}
         />
       ))}
 

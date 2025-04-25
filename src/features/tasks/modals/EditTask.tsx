@@ -1,131 +1,104 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { TextInput } from "../../../shared/components/textInput/TextInput";
 import { Button } from "../../../shared/components/button/Button";
 import { Dropdown } from "../../../shared/components/Dropdown";
 import { AddSubtasksList } from "../../tasks/components/AddSubtasksList";
 import { useGetColumns } from "../../columns/hooks/useGetColumns";
 import { Column } from "../../../shared/types/column";
-import { useSubtasksList } from "../../tasks/hooks/useSubtasksList";
 import { useGetOneTask } from "../../tasks/hooks/useGetOneTask";
-import { useGetSubtasks } from "../../subtasks/hooks/useGetSubtasks";
-import { useCreateSubtask } from "../../subtasks/hooks/useCreateSubtask";
-import { useUpdateSubtask } from "../../subtasks/hooks/useUpdateSubtask";
-import { useDeleteSubtask } from "../../subtasks/hooks/useDeleteSubtask";
 import { useUpdateTask } from "../hooks/useUpdateTask";
-import { useModalStore } from "../../../shared/stores/useModalStore";
 import { Spinner } from "../../../shared/components/spinner/Spinner";
-import { Task } from "../../../shared/types/task";
-import { useParams } from "react-router-dom";
 
-interface EditTaskPayload {
-  taskId: string;
+interface Props {
+  payload: { taskId: string };
 }
 
-export const EditTask: React.FC = () => {
-  const { current, closeModal } = useModalStore();
-  const payload = current?.payload as EditTaskPayload;
-  const taskId = payload.taskId;
-  const { boardId } = useParams();
-
-  const taskQuery = useGetOneTask(taskId);
-  const columnsQuery = useGetColumns(boardId ?? "");
-  const subtasksQuery = useGetSubtasks(taskId);
+export const EditTask: React.FC<Props> = ({ payload }) => {
+  const taskQuery = useGetOneTask(payload.taskId);
+  const columnsQuery = useGetColumns();
 
   const updateTaskMutation = useUpdateTask();
-  const createSubtask = useCreateSubtask();
-  const updateSubtask = useUpdateSubtask();
-  const deleteSubtask = useDeleteSubtask();
-
-  const {
-    subtasks,
-    handleAddSubtask,
-    handleSubtaskChange,
-    handleSubtaskRemove,
-    setSubtasks,
-  } = useSubtasksList();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedColumn, setSelectedColumn] = useState<Column | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [selectedColumn, setSelectedColumn] = useState<Column | null>();
+  const [localSubtasks, setLocalSubtasks] = useState<
+    {
+      _id: string;
+      title: string;
+      isCompleted: boolean;
+    }[]
+  >([]);
 
   useEffect(() => {
-    if (taskQuery.data) {
-      setTitle(taskQuery.data.title);
+    if (taskQuery.data?.column && columnsQuery.data && !selectedColumn)
+      setSelectedColumn(
+        columnsQuery.data.find(
+          (column) => column._id === taskQuery.data.column
+        ) ?? null
+      );
+  }, [taskQuery.data, columnsQuery.data, selectedColumn]);
+
+  useEffect(() => {
+    if (taskQuery.data?.subtasks && !localSubtasks) {
+      const normalizedSubtasks = taskQuery.data.subtasks.map((subtask) => ({
+        _id: subtask._id ?? crypto.randomUUID(),
+        title: subtask.title,
+        isCompleted: subtask.isCompleted,
+      }));
+      setLocalSubtasks(normalizedSubtasks);
+    }
+  }, [taskQuery.data?.subtasks, localSubtasks]);
+
+  useEffect(() => {
+    if (taskQuery.data && !title) setTitle(taskQuery.data.title);
+
+    if (taskQuery.data && !description)
       setDescription(taskQuery.data.description);
-    }
-  }, [taskQuery.data]);
+  }, [taskQuery.data, description, title]);
 
-  useEffect(() => {
-    if (columnsQuery.data && taskQuery.data) {
-      const col = columnsQuery.data.find(
-        (c) => c._id === taskQuery.data?.column
-      );
-      setSelectedColumn(col || null);
-    }
-    if (subtasksQuery.data) {
-      setSubtasks(
-        subtasksQuery.data.map((s, i) => ({
-          tempId: i,
-          title: s.title,
-          _id: s._id,
-        }))
-      );
-    }
-  }, [columnsQuery.data, taskQuery.data, subtasksQuery.data, setSubtasks]);
+  if (taskQuery.isLoading || columnsQuery.isLoading)
+    return <Spinner size="xl" />;
+  if (!taskQuery.data || !columnsQuery.data) return null;
 
-  const isPending =
-    updateTaskMutation.isPending ||
-    createSubtask.isPending ||
-    updateSubtask.isPending ||
-    deleteSubtask.isPending;
+  const handleAddSubtask = () => {
+    const newLocalSubtasks = [
+      ...localSubtasks,
+      { _id: crypto.randomUUID(), title: "", isCompleted: false },
+    ];
+    setLocalSubtasks(newLocalSubtasks);
+  };
 
-  const handleSubmit = async () => {
-    if (!taskQuery.data?._id) {
-      setError("Task data not loaded yet");
-      return;
-    }
+  const handleSubtaskChange = (_id: string, value: string) => {
+    const newLocalSubtasks = localSubtasks.map((subtask) =>
+      subtask._id === _id ? { ...subtask, title: value } : subtask
+    );
+    setLocalSubtasks(newLocalSubtasks);
+  };
 
-    setError(null);
-    if (!title.trim()) return setError("Title cannot be empty");
-    if (!selectedColumn) return setError("Select a status");
+  const handleSubtaskRemove = (_id: string) => {
+    const newLocalSubtasks = localSubtasks.filter(
+      (subtask) => subtask._id !== _id
+    );
+    setLocalSubtasks(newLocalSubtasks);
+  };
 
-    const existingIds = subtasksQuery.data?.map((s) => s._id) || [];
-    const localIds = subtasks.map((s) => s._id).filter(Boolean) as string[];
+  const handleSelectColumn = (column: Column) => {
+    setSelectedColumn(column);
+  };
 
-    const toDelete = existingIds.filter((id) => !localIds.includes(id));
-    const toUpdate = subtasks.filter((s) => s._id);
-    const toCreate = subtasks.filter((s) => !s._id);
-
-    try {
-      const updatedTask: Task = {
+  const handleSubmit = () => {
+    updateTaskMutation.mutateAsync({
+      task: {
         ...taskQuery.data,
-        title,
-        description,
-        column: selectedColumn._id,
-      };
-      await updateTaskMutation.mutateAsync({
-        task: updatedTask,
-        sourceColumnId: taskQuery.data?.column as string,
-      });
-
-      await Promise.all(
-        toDelete.map((id) =>
-          deleteSubtask.mutateAsync({ subtaskId: id, taskId })
-        )
-      );
-      await Promise.all(toUpdate.map((s) => updateSubtask.mutateAsync(s)));
-      await Promise.all(
-        toCreate.map((s) =>
-          createSubtask.mutateAsync({ title: s.title, task: taskId })
-        )
-      );
-
-      closeModal();
-    } catch (err) {
-      setError("An error occurred, please try again.");
-      console.error(err);
-    }
+        subtasks: localSubtasks.map((subtask) => ({
+          title: subtask.title,
+          isCompleted: subtask.isCompleted,
+        })),
+        column: selectedColumn?._id as string,
+      },
+      sourceColumnId: taskQuery.data.column,
+    });
   };
 
   return (
@@ -141,7 +114,7 @@ export const EditTask: React.FC = () => {
       />
 
       <AddSubtasksList
-        subtasks={subtasks}
+        subtasks={localSubtasks}
         onAdd={handleAddSubtask}
         onChange={handleSubtaskChange}
         onRemove={handleSubtaskRemove}
@@ -149,16 +122,19 @@ export const EditTask: React.FC = () => {
 
       <div>
         <h5 className="body-m mb-2 text-medium-gray">Status</h5>
-
         <Dropdown
-          options={columnsQuery.data || []}
-          currentValue={selectedColumn}
-          setValue={setSelectedColumn}
+          options={columnsQuery.data}
+          currentValue={selectedColumn ?? null}
+          handleSelect={handleSelectColumn}
         />
       </div>
 
-      <Button variant="primary" onClick={handleSubmit} disabled={isPending}>
-        {isPending ? <Spinner /> : "Save Changes"}
+      <Button
+        variant="primary"
+        onClick={handleSubmit}
+        disabled={updateTaskMutation.isPending}
+      >
+        {updateTaskMutation.isPending ? <Spinner /> : "Save Changes"}
       </Button>
     </div>
   );

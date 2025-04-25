@@ -1,5 +1,12 @@
 import api from "../../lib/axios";
-import { Task, TaskDto } from "../../shared/types/task";
+import { Task } from "../../shared/types/task";
+
+interface NewTask {
+  title: string;
+  description: string;
+  subtasks: { title: string; isCompleted: boolean }[];
+  column: string;
+}
 
 export const fetchTasks = async (columnId: string): Promise<Task[]> => {
   const res = await api.get(`/columns/${columnId}/tasks`);
@@ -16,10 +23,7 @@ export const updateTask = async (task: Task): Promise<Task> => {
   return res.data.data.data;
 };
 
-export const createTask = async (newTask: TaskDto): Promise<Task> => {
-  const res = await api.post(`/columns/${newTask.column}/tasks`, {
-    title: newTask.title,
-    description: newTask.description,
-  });
+export const createTask = async (newTask: NewTask): Promise<Task> => {
+  const res = await api.post(`/columns/${newTask.column}/tasks`, newTask);
   return res.data.data.doc;
 };

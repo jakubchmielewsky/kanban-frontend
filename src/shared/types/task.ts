@@ -3,10 +3,9 @@ export interface Task {
   title: string;
   description: string;
   column: string;
-}
-
-export interface TaskDto {
-  title: string;
-  description: string;
-  column: string;
+  subtasks: {
+    _id?: string;
+    title: string;
+    isCompleted: boolean;
+  }[];
 }
