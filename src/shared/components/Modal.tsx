@@ -1,12 +1,12 @@
 import { createPortal } from "react-dom";
 import { useModalStore } from "../stores/useModalStore";
-import { AddBoard } from "../../features/boards/modals/AddBoardModal";
+import { CreateBoard } from "../../features/boards/modals/CreateBoard";
 import { TaskDetails } from "../../features/tasks/modals/TaskDetails";
-import { AddNewTask } from "../../features/tasks/modals/AddNewTask";
+import { CreateTask } from "../../features/tasks/modals/CreateTask";
 import { EditTask } from "../../features/tasks/modals/EditTask";
 import { DeleteTask } from "../../features/tasks/modals/DeleteTask";
 import { DeleteBoard } from "../../features/boards/modals/DeleteBoard";
-import { EditBoard } from "../../features/boards/modals/EditBoard";
+import { UpdateBoard } from "../../features/boards/modals/UpdateBoard";
 
 export const Modal: React.FC = () => {
   const current = useModalStore((store) => store.current);
@@ -17,16 +17,16 @@ export const Modal: React.FC = () => {
   let modalContent;
 
   switch (current.name) {
-    case "ADD_BOARD":
-      modalContent = <AddBoard />;
+    case "CREATE_BOARD":
+      modalContent = <CreateBoard />;
       break;
     case "TASK_DETAILS":
       modalContent = <TaskDetails payload={current.payload} />;
       break;
-    case "ADD_TASK":
-      modalContent = <AddNewTask />;
+    case "CREATE_TASK":
+      modalContent = <CreateTask />;
       break;
-    case "EDIT_TASK":
+    case "UPDATE_TASK":
       modalContent = <EditTask payload={current.payload} />;
       break;
     case "DELETE_TASK":
@@ -35,8 +35,8 @@ export const Modal: React.FC = () => {
     case "DELETE_BOARD":
       modalContent = <DeleteBoard payload={current.payload} />;
       break;
-    case "EDIT_BOARD":
-      modalContent = <EditBoard payload={current.payload} />;
+    case "UPDATE_BOARD":
+      modalContent = <UpdateBoard payload={current.payload} />;
       break;
     default:
       modalContent = null;

@@ -3,23 +3,28 @@ import { TextInput } from "../../../shared/components/textInput/TextInput";
 import { Button } from "../../../shared/components/button/Button";
 import { Dropdown } from "../../../shared/components/Dropdown";
 import { AddSubtasksList } from "../../tasks/components/AddSubtasksList";
-import { useGetColumns } from "../../columns/hooks/useGetColumns";
+import { useFetchColumns } from "../../columns/hooks/useFetchColumns";
 import { Column } from "../../../shared/types/column";
-import { useGetOneTask } from "../../tasks/hooks/useGetOneTask";
 import { useUpdateTask } from "../hooks/useUpdateTask";
 import { Spinner } from "../../../shared/components/spinner/Spinner";
 import { useModalStore } from "../../../shared/stores/useModalStore";
+import { useSafeParams } from "../../../shared/hooks/useSafeParams";
+import { useFetchTasks } from "../hooks/useFetchTasks";
+import { Task } from "../../../shared/types/task";
 
 interface Props {
-  payload: { taskId: string };
+  payload: { task: Task };
 }
 
 export const EditTask: React.FC<Props> = ({ payload }) => {
   const closeModal = useModalStore((s) => s.closeModal);
-  const taskQuery = useGetOneTask(payload.taskId);
-  const columnsQuery = useGetColumns();
 
-  const updateTaskMutation = useUpdateTask();
+  const { boardId } = useSafeParams();
+  const columnsQuery = useFetchColumns(boardId);
+  const tasksQuery = useFetchTasks(boardId);
+  const task = tasksQuery.data?.find((task) => task._id === payload.task._id);
+
+  const updateTaskMutation = useUpdateTask(boardId);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -33,35 +38,30 @@ export const EditTask: React.FC<Props> = ({ payload }) => {
   >([]);
 
   useEffect(() => {
-    if (taskQuery.data?.column && columnsQuery.data && !selectedColumn)
+    if (task?.columnId && columnsQuery.data && !selectedColumn)
       setSelectedColumn(
-        columnsQuery.data.find(
-          (column) => column._id === taskQuery.data.column
-        ) ?? null
+        columnsQuery.data.find((column) => column._id === task.columnId) ?? null
       );
-  }, [taskQuery.data, columnsQuery.data, selectedColumn]);
+  }, [task, columnsQuery.data, selectedColumn]);
 
   useEffect(() => {
-    if (taskQuery.data) {
-      const normalizedSubtasks = taskQuery.data.subtasks.map((subtask) => ({
+    if (task) {
+      const normalizedSubtasks = task.subtasks.map((subtask) => ({
         _id: subtask._id ?? crypto.randomUUID(),
         title: subtask.title,
         isCompleted: subtask.isCompleted,
       }));
       setLocalSubtasks(normalizedSubtasks);
     }
-  }, [taskQuery.data]);
+  }, [task]);
 
   useEffect(() => {
-    if (taskQuery.data && !title) setTitle(taskQuery.data.title);
+    if (task && !title) setTitle(task.title);
 
-    if (taskQuery.data && !description)
-      setDescription(taskQuery.data.description);
-  }, [taskQuery.data, description, title]);
+    if (task && !description) setDescription(task.description);
+  }, [task, description, title]);
 
-  if (taskQuery.isLoading || columnsQuery.isLoading)
-    return <Spinner size="xl" />;
-  if (!taskQuery.data || !columnsQuery.data) return null;
+  if (!task || !columnsQuery.data) return null;
 
   const handleAddSubtask = () => {
     const newLocalSubtasks = [
@@ -93,15 +93,15 @@ export const EditTask: React.FC<Props> = ({ payload }) => {
     if (!selectedColumn) return;
 
     const payload = {
-      task: {
-        ...taskQuery.data,
+      taskId: task._id,
+      updates: {
+        ...task,
         subtasks: localSubtasks.map((subtask) => ({
           title: subtask.title,
           isCompleted: subtask.isCompleted,
         })),
-        column: selectedColumn._id,
+        columnId: selectedColumn._id,
       },
-      sourceColumnId: taskQuery.data.column,
     };
 
     updateTaskMutation.mutateAsync(payload);

@@ -10,14 +10,17 @@ interface Props {
   payload: { board: Board };
 }
 
-export const EditBoard: React.FC<Props> = ({ payload }) => {
+export const UpdateBoard: React.FC<Props> = ({ payload }) => {
   const [boardName, setBoardName] = useState(payload.board.name);
   const closeModal = useModalStore((store) => store.closeModal);
 
   const updateBoardMutation = useUpdateBoard();
 
   const handleUpdateBoard = () => {
-    updateBoardMutation.mutateAsync({ ...payload.board, name: boardName });
+    updateBoardMutation.mutateAsync({
+      boardId: payload.board._id,
+      updates: { ...payload.board, name: boardName },
+    });
   };
 
   useEffect(() => {

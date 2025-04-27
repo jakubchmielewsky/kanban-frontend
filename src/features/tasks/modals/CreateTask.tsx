@@ -1,19 +1,21 @@
 import { useState, useEffect } from "react";
 import { TextInput } from "../../../shared/components/textInput/TextInput";
 import { Button } from "../../../shared/components/button/Button";
-import { useGetColumns } from "../../columns/hooks/useGetColumns";
+import { useFetchColumns } from "../../columns/hooks/useFetchColumns";
 import { Column } from "../../../shared/types/column";
 import { useCreateTask } from "../hooks/useCreateTask";
 import { AddSubtasksList } from "../components/AddSubtasksList";
 import { Dropdown } from "../../../shared/components/Dropdown";
 import { Spinner } from "../../../shared/components/spinner/Spinner";
 import { useModalStore } from "../../../shared/stores/useModalStore";
+import { useSafeParams } from "../../../shared/hooks/useSafeParams";
 
-export const AddNewTask: React.FC = () => {
+export const CreateTask: React.FC = () => {
   const closeModal = useModalStore((s) => s.closeModal);
-  const columnsQuery = useGetColumns();
+  const { boardId } = useSafeParams();
+  const columnsQuery = useFetchColumns(boardId);
 
-  const createTaskMutation = useCreateTask();
+  const createTaskMutation = useCreateTask(boardId);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -63,17 +65,17 @@ export const AddNewTask: React.FC = () => {
   const handleSubmit = () => {
     if (!selectedColumn) return;
 
-    const payload = {
+    const task = {
       title,
       description,
       subtasks: localSubtasks.map((subtask) => ({
         title: subtask.title,
         isCompleted: subtask.isCompleted,
       })),
-      column: selectedColumn._id,
+      columnId: selectedColumn._id,
     };
 
-    createTaskMutation.mutateAsync(payload);
+    createTaskMutation.mutateAsync({ task: task });
     closeModal();
   };
 

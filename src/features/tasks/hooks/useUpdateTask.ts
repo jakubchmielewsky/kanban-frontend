@@ -1,28 +1,23 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateTask } from "../api";
-import { Task } from "../../../shared/types/task";
+import { UpdateTaskDto } from "../../../shared/types/task";
 
-interface UpdateTaskArgs {
-  task: Task;
-  sourceColumnId: string;
+export interface UpdateTaskMutation {
+  taskId: string;
+  updates: UpdateTaskDto;
 }
 
-export const useUpdateTask = () => {
+export const useUpdateTask = (boardId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ task }: UpdateTaskArgs) => updateTask(task),
+    mutationFn: ({ taskId, updates }: UpdateTaskMutation) =>
+      updateTask(taskId, updates),
 
-    onSuccess: (_updatedTask, { task, sourceColumnId }) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["tasks", sourceColumnId],
+        queryKey: ["tasks", boardId],
       });
-
-      queryClient.invalidateQueries({
-        queryKey: ["tasks", task.column],
-      });
-
-      queryClient.invalidateQueries({ queryKey: ["task", task._id] });
     },
   });
 };

@@ -1,74 +1,76 @@
 import OptionsIcon from "../../../assets/icon-vertical-ellipsis.svg?react";
 import { Dropdown } from "../../../shared/components/Dropdown";
-import { Spinner } from "../../../shared/components/spinner/Spinner";
 import { ContextMenu } from "../../../shared/components/ContextMenu";
 import { useContextMenu } from "../../../shared/hooks/useContextMenu";
 import { useModalStore } from "../../../shared/stores/useModalStore";
 import { Subtask } from "../components/Subtask";
-import { useGetOneTask } from "../hooks/useGetOneTask";
 import { useUpdateTask } from "../hooks/useUpdateTask";
-import { useGetColumns } from "../../columns/hooks/useGetColumns";
+import { useFetchColumns } from "../../columns/hooks/useFetchColumns";
 import { Column } from "../../../shared/types/column";
+import { useSafeParams } from "../../../shared/hooks/useSafeParams";
+import { useFetchTasks } from "../hooks/useFetchTasks";
 
 interface Props {
   payload: { taskId: string };
 }
 
 export const TaskDetails: React.FC<Props> = ({ payload }) => {
-  const taskQuery = useGetOneTask(payload.taskId);
-  const columnsQuery = useGetColumns();
+  const { boardId } = useSafeParams();
+  const columnsQuery = useFetchColumns(boardId);
+  const tasksQuery = useFetchTasks(boardId);
+  const task = tasksQuery.data?.find((task) => task._id === payload.taskId);
 
-  const updateTaskMutation = useUpdateTask();
+  const updateTaskMutation = useUpdateTask(boardId);
   const openModal = useModalStore((a) => a.openModal);
   const { isContextMenuVisible, coords, openContextMenu, closeContextMenu } =
     useContextMenu();
 
-  if (taskQuery.isLoading || columnsQuery.isLoading)
-    return <Spinner size="xl" />;
-  if (!taskQuery.data || !columnsQuery.data) return null;
+  if (!columnsQuery.data || !task) return null;
 
   const selectedColumn =
-    columnsQuery.data.find((column) => column._id === taskQuery.data.column) ??
-    null;
+    columnsQuery.data.find((column) => column._id === task.columnId) ?? null;
 
-  const totalSubtasks = taskQuery.data.subtasks.length;
-  const completedSubtasks = taskQuery.data.subtasks.reduce(
+  const totalSubtasks = task.subtasks.length;
+  const completedSubtasks = task.subtasks.reduce(
     (completed, subtask) => completed + (subtask.isCompleted ? 1 : 0),
     0
   );
 
   const handleOpenEditTaskModal = (): void => {
-    openModal({ name: "EDIT_TASK", payload: { taskId: taskQuery.data._id } });
+    openModal({ name: "UPDATE_TASK", payload: { task } });
   };
 
   const handleOpenDeleteTaskModal = (): void => {
-    openModal({ name: "DELETE_TASK", payload: { taskId: taskQuery.data._id } });
+    openModal({ name: "DELETE_TASK", payload: { task } });
   };
   const handleToggleCompleteSubtask = (
     subtaskId: string,
     isCompleted: boolean
   ): void => {
-    const updatedSubtasks = taskQuery.data.subtasks.map((subtask) =>
+    const updatedSubtasks = task.subtasks.map((subtask) =>
       subtask._id === subtaskId ? { ...subtask, isCompleted } : subtask
     );
 
     updateTaskMutation.mutateAsync({
-      task: { ...taskQuery.data, subtasks: updatedSubtasks },
-      sourceColumnId: taskQuery.data.column,
+      taskId: task._id,
+      updates: {
+        ...task,
+        subtasks: updatedSubtasks,
+      },
     });
   };
 
   const handleSelectColumn = (column: Column): void => {
     updateTaskMutation.mutateAsync({
-      task: { ...taskQuery.data, column: column._id },
-      sourceColumnId: taskQuery.data.column,
+      taskId: task._id,
+      updates: { ...task, columnId: column._id },
     });
   };
 
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h3 className="heading-l">{taskQuery.data.title}</h3>
+        <h3 className="heading-l">{task.title}</h3>
         <button
           className="p-2 cursor-pointer"
           onClick={(e) => openContextMenu(e)}
@@ -97,9 +99,7 @@ export const TaskDetails: React.FC<Props> = ({ payload }) => {
         )}
       </div>
 
-      <p className="mt-3 body-l text-medium-gray">
-        {taskQuery.data.description}
-      </p>
+      <p className="mt-3 body-l text-medium-gray">{task.description}</p>
 
       {totalSubtasks > 0 && (
         <h5 className="mt-5 mb-3 body-m text-medium-gray">
@@ -107,7 +107,7 @@ export const TaskDetails: React.FC<Props> = ({ payload }) => {
         </h5>
       )}
 
-      {taskQuery.data.subtasks.map((subtask) => (
+      {task.subtasks.map((subtask) => (
         <Subtask
           subtask={subtask}
           key={subtask._id}

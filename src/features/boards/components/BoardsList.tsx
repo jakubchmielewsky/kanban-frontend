@@ -1,4 +1,4 @@
-import { useGetBoards } from "../hooks/useGetBoards";
+import { useFetchBoards } from "../hooks/useFetchBoards";
 import { Button } from "../../../shared/components/button/Button";
 import IconBoard from "../../../assets/icon-board.svg?react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,7 +10,7 @@ interface BoardsListProps {
 }
 
 export const BoardsList: React.FC<BoardsListProps> = ({ onBoardSelect }) => {
-  const boards = useGetBoards();
+  const boards = useFetchBoards();
   const { boardId } = useParams();
   const navigate = useNavigate();
   const openModal = useModalStore((store) => store.openModal);
@@ -23,7 +23,7 @@ export const BoardsList: React.FC<BoardsListProps> = ({ onBoardSelect }) => {
   };
 
   const handleCreateBoard = () => {
-    openModal({ name: "ADD_BOARD" });
+    openModal({ name: "CREATE_BOARD" });
   };
 
   return (

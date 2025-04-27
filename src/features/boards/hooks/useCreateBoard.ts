@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createBoard } from "../api";
-import { CreateUpdateBoardDto } from "../../../shared/types/board";
+import { CreateBoardDto } from "../../../shared/types/board";
 
 export const useCreateBoard = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (newBoard: CreateUpdateBoardDto) => createBoard(newBoard),
+    mutationFn: (newBoard: CreateBoardDto) => createBoard(newBoard),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["boards"] });
     },

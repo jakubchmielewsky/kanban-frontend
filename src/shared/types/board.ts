@@ -1,10 +1,15 @@
 export interface Board {
   _id: string;
   name: string;
-  owner: string;
-  members: string[];
+  ownerId: string;
+  membersIds: string[];
 }
 
-export interface CreateUpdateBoardDto {
+export interface CreateBoardDto {
   name: string;
+}
+
+export interface UpdateBoardDto {
+  name: string;
+  ownerId: string;
 }

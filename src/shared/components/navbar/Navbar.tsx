@@ -4,34 +4,37 @@ import { useIsMobile } from "../../hooks/useIsMobile";
 import IconAdd from "../../../assets/icon-add-task-mobile.svg?react";
 import IconVerticalEllipsis from "../../../assets/icon-vertical-ellipsis.svg?react";
 import { Button } from "../button/Button";
-import { useGetBoards } from "../../../features/boards/hooks/useGetBoards";
-import { useParams } from "react-router-dom";
+import { useFetchBoards } from "../../../features/boards/hooks/useFetchBoards";
 import { NavbarMobileDropdown } from "./NavbarMobileDropdown";
 import { useModalStore } from "../../stores/useModalStore";
 import { ContextMenu } from "../ContextMenu";
 import { useContextMenu } from "../../hooks/useContextMenu";
-import { useGetColumns } from "../../../features/columns/hooks/useGetColumns";
+import { useFetchColumns } from "../../../features/columns/hooks/useFetchColumns";
+import { useSafeParams } from "../../hooks/useSafeParams";
 
 export const Navbar: React.FC = () => {
   const isMobile = useIsMobile();
-  const boards = useGetBoards();
-  const { boardId } = useParams();
+  const boards = useFetchBoards();
+  const { boardId } = useSafeParams();
   const selectedBoard =
     boards.data?.find((board) => board._id === boardId) || null;
   const openModal = useModalStore((store) => store.openModal);
   const { isContextMenuVisible, openContextMenu, closeContextMenu, coords } =
     useContextMenu();
-  const columnsQuery = useGetColumns();
+  const columnsQuery = useFetchColumns(boardId);
 
   const handleAddNewTask = () => {
-    openModal({ name: "ADD_TASK" });
+    openModal({ name: "CREATE_TASK" });
 
     closeContextMenu();
   };
 
   const handleEditBoard = () => {
     if (!selectedBoard) return;
-    openModal({ name: "EDIT_BOARD", payload: { board: selectedBoard } });
+    openModal({
+      name: "UPDATE_BOARD",
+      payload: { board: selectedBoard },
+    });
     closeContextMenu();
   };
 

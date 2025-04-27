@@ -1,34 +1,37 @@
 import api from "../../lib/axios";
-import { Task } from "../../shared/types/task";
+import { Task, CreateTaskDto, UpdateTaskDto } from "../../shared/types/task";
+import { ApiResponse } from "../../shared/types/api";
 
-interface NewTask {
-  title: string;
-  description: string;
-  subtasks: { title: string; isCompleted: boolean }[];
-  column: string;
-}
-
-export const fetchTasks = async (columnId: string): Promise<Task[]> => {
-  const res = await api.get(`/columns/${columnId}/tasks`);
-  return res.data.data.data;
+export const fetchTasks = async (boardId: string): Promise<Task[]> => {
+  const res = await api.get<ApiResponse<Task[]>>(`/boards/${boardId}/tasks`);
+  return res.data.data!;
 };
 
-export const getTask = async (taskId: string): Promise<Task> => {
-  const res = await api.get(`/tasks/${taskId}`);
-  return res.data.data.data;
+export const fetchTask = async (taskId: string): Promise<Task> => {
+  const res = await api.get<ApiResponse<Task>>(`/tasks/${taskId}`);
+  return res.data.data!;
 };
 
-export const updateTask = async (task: Task): Promise<Task> => {
-  const res = await api.patch(`/tasks/${task._id}`, task);
-  return res.data.data.data;
+export const createTask = async (
+  boardId: string,
+  newTask: CreateTaskDto
+): Promise<Task> => {
+  const res = await api.post<ApiResponse<Task>>(
+    `/boards/${boardId}/tasks`,
+    newTask
+  );
+  return res.data.data!;
 };
 
-export const createTask = async (newTask: NewTask): Promise<Task> => {
-  const res = await api.post(`/columns/${newTask.column}/tasks`, newTask);
-  return res.data.data.doc;
+export const updateTask = async (
+  taskId: string,
+  updates: UpdateTaskDto
+): Promise<Task> => {
+  const res = await api.patch<ApiResponse<Task>>(`/tasks/${taskId}`, updates);
+  return res.data.data!;
 };
 
-export const deleteTask = async (taskId: string): Promise<void> => {
-  const res = await api.delete(`/tasks/${taskId}`);
-  return res.data.data;
+export const deleteTask = async (taskId: string): Promise<Task> => {
+  const res = await api.delete<ApiResponse<Task>>(`/tasks/${taskId}`);
+  return res.data.data!;
 };

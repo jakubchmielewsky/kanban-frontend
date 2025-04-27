@@ -1,4 +1,4 @@
-import { useGetBoards } from "../../../features/boards/hooks/useGetBoards";
+import { useFetchBoards } from "../../../features/boards/hooks/useFetchBoards";
 import { useParams } from "react-router-dom";
 import IconChevronDown from "../../..//assets/icon-chevron-down.svg?react";
 import IconChevronUp from "../../..//assets/icon-chevron-up.svg?react";
@@ -6,7 +6,7 @@ import { useState } from "react";
 import { BoardsList } from "../../../features/boards/components/BoardsList";
 
 export const NavbarMobileDropdown = () => {
-  const boards = useGetBoards();
+  const boards = useFetchBoards();
   const { boardId } = useParams();
   const selectedBoard = boards.data?.find((board) => board._id === boardId);
   const boardName = selectedBoard?.name ?? "Select Board";

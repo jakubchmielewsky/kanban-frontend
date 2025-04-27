@@ -5,7 +5,7 @@ import { useCreateBoard } from "../hooks/useCreateBoard";
 import { Spinner } from "../../../shared/components/spinner/Spinner";
 import { useModalStore } from "../../../shared/stores/useModalStore";
 
-export const AddBoard: React.FC = () => {
+export const CreateBoard: React.FC = () => {
   const [boardName, setBoardName] = useState("");
   const closeModal = useModalStore((store) => store.closeModal);
 

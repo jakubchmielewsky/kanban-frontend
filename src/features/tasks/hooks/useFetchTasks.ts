@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchTasks } from "../api";
 
-export const useGetTasks = (columnId: string) => {
+export const useFetchTasks = (boardId: string) => {
   return useQuery({
-    queryKey: ["tasks", columnId],
-    queryFn: () => fetchTasks(columnId),
+    queryKey: ["tasks", boardId],
+    queryFn: () => fetchTasks(boardId),
     staleTime: 1000 * 60 * 5,
   });
 };

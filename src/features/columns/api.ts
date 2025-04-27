@@ -1,27 +1,47 @@
 import api from "../../lib/axios";
-import { Column } from "../../shared/types/column";
+import {
+  Column,
+  CreateColumnDto,
+  UpdateColumnDto,
+} from "../../shared/types/column";
+import { ApiResponse } from "../../shared/types/api";
 
-export const fetchAllColumns = async (boardId: string): Promise<Column[]> => {
-  const res = await api.get(`/boards/${boardId}/columns`);
-  return res.data.data.data;
+export const fetchColumns = async (boardId: string): Promise<Column[]> => {
+  const res = await api.get<ApiResponse<Column[]>>(
+    `/boards/${boardId}/columns`
+  );
+  return res.data.data!;
 };
 
-// export const updateColumn = async (
-//   boardId: string,
-//   updatedBoard: CreateUpdateBoardDto
-// ): Promise<Board> => {
-//   const res = await api.patch(`/boards/${boardId}`, updatedBoard);
-//   return res.data.data.data;
-// };
+export const createColumn = async (
+  boardId: string,
+  newColumn: CreateColumnDto
+): Promise<Column> => {
+  const res = await api.post<ApiResponse<Column>>(
+    `/boards/${boardId}/columns`,
+    newColumn
+  );
+  return res.data.data!;
+};
 
-// export const deleteColumn = async (boardId: string): Promise<Board> => {
-//   const res = await api.delete(`/boards/${boardId}`);
-//   return res.data;
-// };
+export const updateColumn = async (
+  boardId: string,
+  columnId: string,
+  updates: UpdateColumnDto
+): Promise<Column> => {
+  const res = await api.patch<ApiResponse<Column>>(
+    `/boards/${boardId}/columns/${columnId}`,
+    updates
+  );
+  return res.data.data!;
+};
 
-// export const createColumn = async (
-//   newBoard: CreateUpdateBoardDto
-// ): Promise<Board> => {
-//   const res = await api.post(`/boards`, newBoard);
-//   return res.data.data.data;
-// };
+export const deleteColumn = async (
+  boardId: string,
+  columnId: string
+): Promise<Column> => {
+  const res = await api.delete<ApiResponse<Column>>(
+    `/boards/${boardId}/columns/${columnId}`
+  );
+  return res.data.data!;
+};

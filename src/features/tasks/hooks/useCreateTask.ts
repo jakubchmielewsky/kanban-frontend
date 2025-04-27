@@ -1,19 +1,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createTask } from "../api";
+import { CreateTaskDto } from "../../../shared/types/task";
 
-interface NewTask {
-  title: string;
-  description: string;
-  subtasks: { title: string; isCompleted: boolean }[];
-  column: string;
+export interface CreateTaskMutation {
+  task: CreateTaskDto;
 }
 
-export const useCreateTask = () => {
+export const useCreateTask = (boardId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (newTask: NewTask) => createTask(newTask),
-    onSuccess: (_newTask, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", variables.column] });
+    mutationFn: ({ task }: CreateTaskMutation) => createTask(boardId, task),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", boardId] });
     },
   });
 };

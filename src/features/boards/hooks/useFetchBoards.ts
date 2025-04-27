@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchAllBoards } from "../api";
+import { fetchBoards } from "../api";
 
-export const useGetBoards = () => {
+export const useFetchBoards = () => {
   return useQuery({
     queryKey: ["boards"],
-    queryFn: fetchAllBoards,
+    queryFn: fetchBoards,
     staleTime: 1000 * 60 * 5,
     retry: true,
   });

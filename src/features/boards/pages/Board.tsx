@@ -1,9 +1,12 @@
+import { useFetchColumns } from "../../columns/hooks/useFetchColumns";
 import { Column } from "../../../features/columns/components/Column";
 import { Button } from "../../../shared/components/button/Button";
-import { useGetColumns } from "../../columns/hooks/useGetColumns";
+import { useSafeParams } from "../../../shared/hooks/useSafeParams";
 
 export const Board: React.FC = () => {
-  const columns = useGetColumns();
+  const { boardId } = useSafeParams<{ boardId: string }>();
+
+  const columns = useFetchColumns(boardId);
 
   if (!columns.data) return null;
 
