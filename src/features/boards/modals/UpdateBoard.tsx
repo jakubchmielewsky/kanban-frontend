@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { TextInput } from "../../../shared/components/textInput/TextInput";
 import { Button } from "../../../shared/components/button/Button";
-import { Spinner } from "../../../shared/components/spinner/Spinner";
+import { Spinner } from "../../../shared/components/Spinner";
 import { useModalStore } from "../../../shared/stores/useModalStore";
 import { useUpdateBoard } from "../hooks/useUpdateBoard";
 import { Board } from "../../../shared/types/board";

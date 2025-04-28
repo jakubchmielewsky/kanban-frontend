@@ -6,14 +6,14 @@ import { Column } from "../../../shared/types/column";
 import { useCreateTask } from "../hooks/useCreateTask";
 import { AddSubtasksList } from "../components/AddSubtasksList";
 import { Dropdown } from "../../../shared/components/Dropdown";
-import { Spinner } from "../../../shared/components/spinner/Spinner";
+import { Spinner } from "../../../shared/components/Spinner";
 import { useModalStore } from "../../../shared/stores/useModalStore";
 import { useSafeParams } from "../../../shared/hooks/useSafeParams";
 
 export const CreateTask: React.FC = () => {
   const closeModal = useModalStore((s) => s.closeModal);
   const { boardId } = useSafeParams();
-  const columnsQuery = useFetchColumns(boardId);
+  const columnsQuery = useFetchColumns();
 
   const createTaskMutation = useCreateTask(boardId);
 

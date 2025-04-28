@@ -6,7 +6,7 @@ import { AddSubtasksList } from "../../tasks/components/AddSubtasksList";
 import { useFetchColumns } from "../../columns/hooks/useFetchColumns";
 import { Column } from "../../../shared/types/column";
 import { useUpdateTask } from "../hooks/useUpdateTask";
-import { Spinner } from "../../../shared/components/spinner/Spinner";
+import { Spinner } from "../../../shared/components/Spinner";
 import { useModalStore } from "../../../shared/stores/useModalStore";
 import { useSafeParams } from "../../../shared/hooks/useSafeParams";
 import { useFetchTasks } from "../hooks/useFetchTasks";
@@ -20,7 +20,7 @@ export const EditTask: React.FC<Props> = ({ payload }) => {
   const closeModal = useModalStore((s) => s.closeModal);
 
   const { boardId } = useSafeParams();
-  const columnsQuery = useFetchColumns(boardId);
+  const columnsQuery = useFetchColumns();
   const tasksQuery = useFetchTasks(boardId);
   const task = tasksQuery.data?.find((task) => task._id === payload.task._id);
 

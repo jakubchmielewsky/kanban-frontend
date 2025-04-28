@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { TextInput } from "../../../shared/components/textInput/TextInput";
 import { Button } from "../../../shared/components/button/Button";
 import { useCreateBoard } from "../hooks/useCreateBoard";
-import { Spinner } from "../../../shared/components/spinner/Spinner";
+import { Spinner } from "../../../shared/components/Spinner";
 import { useModalStore } from "../../../shared/stores/useModalStore";
 
 export const CreateBoard: React.FC = () => {

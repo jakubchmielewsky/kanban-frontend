@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
 import { TextInput } from "../../../shared/components/textInput/TextInput";
 import { Button } from "../../../shared/components/button/Button";
-import { Spinner } from "../../../shared/components/spinner/Spinner";
+import { Spinner } from "../../../shared/components/Spinner";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");

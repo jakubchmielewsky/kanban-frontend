@@ -16,7 +16,7 @@ interface Props {
 
 export const TaskDetails: React.FC<Props> = ({ payload }) => {
   const { boardId } = useSafeParams();
-  const columnsQuery = useFetchColumns(boardId);
+  const columnsQuery = useFetchColumns();
   const tasksQuery = useFetchTasks(boardId);
   const task = tasksQuery.data?.find((task) => task._id === payload.taskId);
 

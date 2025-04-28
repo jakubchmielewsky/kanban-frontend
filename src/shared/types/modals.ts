@@ -2,6 +2,7 @@ import { Board } from "./board";
 import { Task } from "./task";
 
 export type ModalType =
+  | { name: "MANAGE_MEMBERS" }
   | { name: "CREATE_BOARD" }
   | { name: "TASK_DETAILS"; payload: { taskId: string } }
   | { name: "CREATE_TASK" }

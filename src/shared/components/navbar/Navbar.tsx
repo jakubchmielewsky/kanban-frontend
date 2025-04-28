@@ -11,6 +11,7 @@ import { ContextMenu } from "../ContextMenu";
 import { useContextMenu } from "../../hooks/useContextMenu";
 import { useFetchColumns } from "../../../features/columns/hooks/useFetchColumns";
 import { useSafeParams } from "../../hooks/useSafeParams";
+import { useCurrentUser } from "../../../features/auth/hooks/useCurrentUser";
 
 export const Navbar: React.FC = () => {
   const isMobile = useIsMobile();
@@ -21,7 +22,8 @@ export const Navbar: React.FC = () => {
   const openModal = useModalStore((store) => store.openModal);
   const { isContextMenuVisible, openContextMenu, closeContextMenu, coords } =
     useContextMenu();
-  const columnsQuery = useFetchColumns(boardId);
+  const columnsQuery = useFetchColumns();
+  const { user } = useCurrentUser();
 
   const handleAddNewTask = () => {
     openModal({ name: "CREATE_TASK" });
@@ -43,6 +45,13 @@ export const Navbar: React.FC = () => {
     openModal({ name: "DELETE_BOARD", payload: { board: selectedBoard } });
     closeContextMenu();
   };
+
+  const handleBoardMembers = () => {
+    openModal({ name: "MANAGE_MEMBERS" });
+    closeContextMenu();
+  };
+
+  const userIsOwner = user?._id === selectedBoard?.ownerId;
 
   return (
     <nav
@@ -76,12 +85,14 @@ export const Navbar: React.FC = () => {
         >
           {!isMobile && "+ Add New Task"}
         </Button>
-        <button
-          className="p-4 cursor-pointer"
-          onClick={(e: React.MouseEvent) => openContextMenu(e)}
-        >
-          <IconVerticalEllipsis />
-        </button>
+        {userIsOwner && (
+          <button
+            className="p-4 cursor-pointer"
+            onClick={(e: React.MouseEvent) => openContextMenu(e)}
+          >
+            <IconVerticalEllipsis />
+          </button>
+        )}
       </div>
 
       {isContextMenuVisible && (
@@ -100,6 +111,14 @@ export const Navbar: React.FC = () => {
               onClick={handleDeleteBoard}
             >
               Delete Board
+            </button>
+          </li>
+          <li>
+            <button
+              className="body-l w-full text-left text-black cursor-pointer"
+              onClick={handleBoardMembers}
+            >
+              Members
             </button>
           </li>
         </ContextMenu>

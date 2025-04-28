@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRegister } from "../hooks/useRegister";
 import { Button } from "../../../shared/components/button/Button";
-import { Spinner } from "../../../shared/components/spinner/Spinner";
+import { Spinner } from "../../../shared/components/Spinner";
 import { TextInput } from "../../../shared/components/textInput/TextInput";
 
 export const RegisterForm = () => {

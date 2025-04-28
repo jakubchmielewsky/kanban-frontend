@@ -2,8 +2,11 @@ import { useFetchBoards } from "../hooks/useFetchBoards";
 import { Button } from "../../../shared/components/button/Button";
 import IconBoard from "../../../assets/icon-board.svg?react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Spinner } from "../../../shared/components/spinner/Spinner";
+import { Spinner } from "../../../shared/components/Spinner";
 import { useModalStore } from "../../../shared/stores/useModalStore";
+import IconOwner from "../../../assets/crown-svgrepo-com.svg?react";
+import { useCurrentUser } from "../../auth/hooks/useCurrentUser";
+import { useSafeParams } from "../../../shared/hooks/useSafeParams";
 
 interface BoardsListProps {
   onBoardSelect?: () => void;
@@ -11,9 +14,10 @@ interface BoardsListProps {
 
 export const BoardsList: React.FC<BoardsListProps> = ({ onBoardSelect }) => {
   const boards = useFetchBoards();
-  const { boardId } = useParams();
+  const { boardId } = useSafeParams();
   const navigate = useNavigate();
   const openModal = useModalStore((store) => store.openModal);
+  const { user } = useCurrentUser();
 
   if (!boards.data) return <Spinner />;
 
@@ -48,7 +52,8 @@ export const BoardsList: React.FC<BoardsListProps> = ({ onBoardSelect }) => {
             onClick={() => handleSelectBoard(board._id)}
             isSelected={board._id === boardId}
           >
-            {board.name}
+            {<span className="min-w-fit">{board.name}</span>}
+            {board.ownerId === user?._id && <IconOwner className="h-4" />}
           </Button>
         );
       })}

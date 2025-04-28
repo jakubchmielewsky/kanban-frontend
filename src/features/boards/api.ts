@@ -5,6 +5,7 @@ import {
   UpdateBoardDto,
 } from "../../shared/types/board";
 import { ApiResponse } from "../../shared/types/api";
+import { User } from "../../shared/types/auth";
 
 export const fetchBoards = async (): Promise<Board[]> => {
   const res = await api.get<ApiResponse<Board[]>>("/boards");
@@ -34,5 +35,20 @@ export const updateBoard = async (
 
 export const deleteBoard = async (boardId: string): Promise<Board> => {
   const res = await api.delete<ApiResponse<Board>>(`/boards/${boardId}`);
+  return res.data.data!;
+};
+
+export const fetchBoardMembers = async (boardId: string): Promise<User[]> => {
+  const res = await api.get<ApiResponse<User[]>>(`/boards/${boardId}/members`);
+  return res.data.data!;
+};
+
+export const addBoardMember = async (
+  boardId: string,
+  newMemberEmail: string
+): Promise<null> => {
+  const res = await api.post<ApiResponse<null>>(`/boards/${boardId}/members`, {
+    newMemberEmail,
+  });
   return res.data.data!;
 };

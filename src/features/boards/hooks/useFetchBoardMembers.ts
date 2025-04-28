@@ -1,15 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchColumns } from "../api";
+import { fetchBoardMembers } from "../api";
 import { useSafeParams } from "../../../shared/hooks/useSafeParams";
 
-export const useFetchColumns = () => {
+export const useFetchBoardMembers = () => {
   const { boardId } = useSafeParams();
 
   return useQuery({
-    queryKey: ["columns", boardId],
-    queryFn: () => fetchColumns(boardId),
-    staleTime: 1000 * 60 * 5,
-    retry: true,
+    queryKey: ["members", boardId],
+    queryFn: () => fetchBoardMembers(boardId),
     enabled: !!boardId,
   });
 };

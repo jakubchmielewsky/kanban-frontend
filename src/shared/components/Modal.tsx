@@ -7,6 +7,7 @@ import { EditTask } from "../../features/tasks/modals/EditTask";
 import { DeleteTask } from "../../features/tasks/modals/DeleteTask";
 import { DeleteBoard } from "../../features/boards/modals/DeleteBoard";
 import { UpdateBoard } from "../../features/boards/modals/UpdateBoard";
+import { ManageMembers } from "../../features/boards/modals/ManageMembers";
 
 export const Modal: React.FC = () => {
   const current = useModalStore((store) => store.current);
@@ -17,6 +18,9 @@ export const Modal: React.FC = () => {
   let modalContent;
 
   switch (current.name) {
+    case "MANAGE_MEMBERS":
+      modalContent = <ManageMembers />;
+      break;
     case "CREATE_BOARD":
       modalContent = <CreateBoard />;
       break;
