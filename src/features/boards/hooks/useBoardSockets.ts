@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import { socket } from "../../../lib/socket";
 import { Task } from "../../../shared/types/task";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useBoardSockets = (boardId: string) => {
+  const queryClient = useQueryClient();
+
   useEffect(() => {
     if (!boardId) return;
 
@@ -15,13 +18,22 @@ export const useBoardSockets = (boardId: string) => {
 
   useEffect(() => {
     const onTaskCreated = (task: Task) => {
-      console.log("Event: task_created", task);
+      queryClient.setQueryData<Task[]>(["tasks", boardId], (prev) => [
+        ...(prev || []),
+        task,
+      ]);
     };
-    const onTaskUpdated = (task: Task) => {
-      console.log("Event: task_updated", task);
+    const onTaskUpdated = (updatedTask: Task) => {
+      queryClient.setQueryData<Task[]>(["tasks", boardId], (prev) => {
+        return prev?.map((task) =>
+          task._id === updatedTask._id ? updatedTask : task
+        );
+      });
     };
     const onTaskDeleted = (taskId: string) => {
-      console.log("Event: task_deleted", taskId);
+      queryClient.setQueryData<Task[]>(["tasks", boardId], (prev) => {
+        return prev?.filter((task) => task._id !== taskId);
+      });
     };
 
     socket.on("task_created", onTaskCreated);
