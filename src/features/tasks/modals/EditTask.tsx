@@ -101,6 +101,8 @@ export const EditTask: React.FC<Props> = ({ payload }) => {
           isCompleted: subtask.isCompleted,
         })),
         columnId: selectedColumn._id,
+        title,
+        description,
       },
     };
 
