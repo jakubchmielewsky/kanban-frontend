@@ -1,9 +1,13 @@
 import { useFetchColumns } from "../../columns/hooks/useFetchColumns";
 import { Column } from "../../../features/columns/components/Column";
 import { Button } from "../../../shared/components/button/Button";
+import { useBoardSockets } from "../hooks/useBoardSockets";
+import { useSafeParams } from "../../../shared/hooks/useSafeParams";
 
 export const Board: React.FC = () => {
+  const { boardId } = useSafeParams();
   const columns = useFetchColumns();
+  useBoardSockets(boardId);
 
   if (!columns.data) return null;
 

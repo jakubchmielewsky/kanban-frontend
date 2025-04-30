@@ -45,10 +45,23 @@ export const fetchBoardMembers = async (boardId: string): Promise<User[]> => {
 
 export const addBoardMember = async (
   boardId: string,
-  newMemberEmail: string
+  memberEmail: string
 ): Promise<null> => {
   const res = await api.post<ApiResponse<null>>(`/boards/${boardId}/members`, {
-    newMemberEmail,
+    memberEmail,
   });
+  return res.data.data!;
+};
+
+export const removeBoardMember = async (
+  boardId: string,
+  memberEmail: string
+): Promise<null> => {
+  const res = await api.delete<ApiResponse<null>>(
+    `/boards/${boardId}/members`,
+    {
+      data: { memberEmail },
+    }
+  );
   return res.data.data!;
 };

@@ -4,24 +4,31 @@ import { TextInput } from "../../../shared/components/textInput/TextInput";
 import { useEffect, useState } from "react";
 import { Button } from "../../../shared/components/button/Button";
 import { useAddBoardMember } from "../hooks/useAddBoardMember";
+import { useRemoveBoardMember } from "../hooks/useRemoveBoardMember";
 
 export const ManageMembers: React.FC = () => {
   const membersQuery = useFetchBoardMembers();
   const addMemberMutation = useAddBoardMember();
+  const removeMemberMutation = useRemoveBoardMember();
+
   const [newMemberEmail, setNewMemberEmail] = useState("");
 
   const members = membersQuery.data;
-
-  const handleAddMember = () => {
-    addMemberMutation.mutateAsync(newMemberEmail);
-  };
 
   useEffect(() => {
     if (addMemberMutation.isSuccess) setNewMemberEmail("");
   }, [addMemberMutation.isSuccess]);
 
+  const handleAddMember = () => {
+    addMemberMutation.mutateAsync(newMemberEmail);
+  };
+
   const handleNewMemberEmailChange = (value: string) => {
     setNewMemberEmail(value);
+  };
+
+  const handleRemoveMember = (memberEmail: string) => {
+    removeMemberMutation.mutateAsync(memberEmail);
   };
 
   return (
@@ -35,7 +42,7 @@ export const ManageMembers: React.FC = () => {
             {members.map((member) => (
               <li className="flex items-center gap-4 p-2" key={member._id}>
                 {member.email}
-                <button>
+                <button onClick={() => handleRemoveMember(member.email)}>
                   <IconDelete className="text-medium-gray hover:text-red" />
                 </button>
               </li>
