@@ -13,7 +13,6 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }
 
   if (!user) {
-    console.log(user);
     return <Navigate to="/login" replace />;
   }
 
