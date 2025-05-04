@@ -1,6 +1,9 @@
 import { useModalStore } from "../../../shared/stores/useModalStore";
 import { Task as TaskType } from "../../../shared/types/task";
 
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
 interface Props {
   task: TaskType;
 }
@@ -14,6 +17,14 @@ export const Task: React.FC<Props> = ({ task }) => {
     0
   );
 
+  const { attributes, listeners, setNodeRef, transform } = useSortable({
+    id: task._id,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+  };
+
   const handleOpenViewTaskModal = () => {
     openModal({
       name: "TASK_DETAILS",
@@ -23,6 +34,10 @@ export const Task: React.FC<Props> = ({ task }) => {
 
   return (
     <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={style}
       className="w-full px-4 py-6 bg-white rounded-lg shadow-md cursor-pointer"
       onClick={handleOpenViewTaskModal}
     >

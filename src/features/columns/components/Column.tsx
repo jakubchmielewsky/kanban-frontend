@@ -1,34 +1,28 @@
-import { useFetchTasks } from "../../tasks/hooks/useFetchTasks";
+import { Task as TaskComponent } from "../../tasks/components/Task";
 import { Column as ColumnType } from "../../../shared/types/column";
-import { Task } from "../../tasks/components/Task";
-import { useSafeParams } from "../../../shared/hooks/useSafeParams";
-import { useMemo } from "react";
+import { Task as TaskType } from "../../../shared/types/task";
+import { SortableContext } from "@dnd-kit/sortable";
+import { useDroppable } from "@dnd-kit/core";
 
 interface ColumnProps {
   column: ColumnType;
+  tasks: TaskType[];
 }
 
-export const Column: React.FC<ColumnProps> = ({ column }) => {
-  const { boardId } = useSafeParams();
-  const tasksQuery = useFetchTasks(boardId);
-  const tasks = useMemo(
-    () =>
-      tasksQuery.data
-        ?.filter((task) => task.columnId === column._id)
-        .sort((a, b) => a.order - b.order) || [],
-    [tasksQuery.data, column._id]
-  );
-
+export const Column: React.FC<ColumnProps> = ({ column, tasks }) => {
+  const { setNodeRef } = useDroppable({ id: column._id });
   return (
-    <div className="w-[280px]">
+    <div className="w-[280px] flex flex-col">
       <h3 className="heading-m text-medium-gray my-3 ml-6">
         {`${column.name.toUpperCase()} (${tasks.length})`}
       </h3>
-      <div className="flex flex-col gap-4">
-        {tasks.map((task) => {
-          return <Task task={task} key={task._id} />;
-        })}
-      </div>
+      <SortableContext items={tasks.map((task) => task._id)}>
+        <div ref={setNodeRef} className="flex flex-col gap-4 grow">
+          {tasks.map((task) => (
+            <TaskComponent key={task._id} task={task} />
+          ))}
+        </div>
+      </SortableContext>
     </div>
   );
 };
