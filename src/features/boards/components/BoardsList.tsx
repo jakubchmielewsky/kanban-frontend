@@ -1,7 +1,7 @@
 import { useFetchBoards } from "../hooks/useFetchBoards";
 import { Button } from "../../../shared/components/button/Button";
 import IconBoard from "../../../assets/icon-board.svg?react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Spinner } from "../../../shared/components/Spinner";
 import { useModalStore } from "../../../shared/stores/useModalStore";
 import IconOwner from "../../../assets/crown-svgrepo-com.svg?react";

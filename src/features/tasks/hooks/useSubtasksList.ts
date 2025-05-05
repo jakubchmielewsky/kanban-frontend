@@ -1,25 +1,26 @@
-import { SubtaskFormData } from "../../../shared/types/subtask";
+import { Subtask } from "../../../shared/types/subtask";
 import { useState } from "react";
 
 export const useSubtasksList = () => {
-  const [subtasks, setSubtasks] = useState<SubtaskFormData[]>([]);
+  const [subtasks, setSubtasks] = useState<Subtask[]>([]);
 
-  const handleSubtaskChange = (id: number, value: string) => {
+  const handleSubtaskChange = (id: string, value: string) => {
     setSubtasks((prev) =>
       prev.map((subtask) =>
-        subtask.tempId === id ? { ...subtask, title: value } : subtask
+        subtask._id === id ? { ...subtask, title: value } : subtask
       )
     );
   };
 
-  const handleSubtaskRemove = (id: number) => {
-    setSubtasks((prev) => prev.filter((subtask) => subtask.tempId !== id));
+  const handleSubtaskRemove = (id: string) => {
+    setSubtasks((prev) => prev.filter((subtask) => subtask._id !== id));
   };
 
   const handleAddSubtask = () => {
-    const newSubtask: SubtaskFormData = {
+    const newSubtask: Subtask = {
       title: "",
-      tempId: Date.now() + Math.random(),
+      _id: (Date.now() + Math.random()).toString(),
+      isCompleted: false,
     };
     setSubtasks((prev) => [...prev, newSubtask]);
   };
