@@ -8,7 +8,6 @@ import { Column } from "../../../features/columns/components/Column";
 import { Column as ColumnType } from "../../../shared/types/column";
 import { Task as TaskType } from "../../../shared/types/task";
 import {
-  closestCorners,
   DndContext,
   DragEndEvent,
   DragOverEvent,
@@ -59,9 +58,27 @@ export const Board: React.FC = () => {
     if (activeId === overId) return;
 
     const activeTaskIndex = tasks.findIndex((task) => task._id === activeId);
+    const activeTask = tasks[activeTaskIndex];
+
+    //over column
+    if (columns.some((column) => column._id === overId)) {
+      const column = columns.find((column) => column._id === overId);
+
+      if (!column) return;
+
+      return setTasks((prev) =>
+        prev.map((task) =>
+          task._id === activeTask._id
+            ? { ...activeTask, columnId: column._id }
+            : task
+        )
+      );
+    }
+
+    //over task
+
     const overTaskIndex = tasks.findIndex((task) => task._id === overId);
 
-    const activeTask = tasks[activeTaskIndex];
     const overTask = tasks[overTaskIndex];
     const overColumn = columns.find(
       (column) => column._id === overTask?.columnId
@@ -174,7 +191,6 @@ export const Board: React.FC = () => {
     <DndContext
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
-      collisionDetection={closestCorners}
       sensors={sensors}
     >
       <div className="h-full w-full overflow-x-auto">
@@ -188,7 +204,7 @@ export const Board: React.FC = () => {
               <Column key={column._id} column={column} tasks={columnTasks} />
             );
           })}
-          <div className="w-[280px] flex items-center justify-center bg-[#ebf1fb] my-10">
+          <div className="w-[280px] flex items-center justify-center bg-[#ebf1fb] my-10 rounded-md">
             <button
               className="heading-xl text-medium-gray cursor-pointer"
               onClick={handleOpenCreateColumnModal}
