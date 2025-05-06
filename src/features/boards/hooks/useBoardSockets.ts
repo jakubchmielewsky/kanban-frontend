@@ -45,5 +45,5 @@ export const useBoardSockets = (boardId: string) => {
       socket.off("task_updated", onTaskUpdated);
       socket.off("task_deleted", onTaskDeleted);
     };
-  }, []);
+  }, [boardId, queryClient]);
 };

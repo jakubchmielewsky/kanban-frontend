@@ -18,12 +18,20 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { useUpdateTask } from "../../tasks/hooks/useUpdateTask";
+import { useCurrentUser } from "../../../features/auth/hooks/useCurrentUser";
+import { useFetchBoards } from "../hooks/useFetchBoards";
+import { useModalStore } from "../../../shared/stores/useModalStore";
 
 export const Board: React.FC = () => {
+  const { user } = useCurrentUser();
+  const boards = useFetchBoards();
   const { boardId } = useSafeParams();
+  const selectedBoard =
+    boards.data?.find((board) => board._id === boardId) || null;
   const columnsQuery = useFetchColumns();
   const tasksQuery = useFetchTasks(boardId);
   const updateTaskMutation = useUpdateTask(boardId);
+  const { openModal } = useModalStore();
   useBoardSockets(boardId);
 
   const [columns, setColumns] = useState<ColumnType[]>([]);
@@ -144,15 +152,21 @@ export const Board: React.FC = () => {
     })
   );
 
+  const handleOpenCreateColumnModal = () => {
+    openModal({ name: "CREATE_COLUMN" });
+  };
+
   if (!columnsQuery.data || !tasksQuery.data) return null;
 
-  if (columns.length < 1)
+  if (columns.length < 1 && user?._id === selectedBoard?.ownerId)
     return (
       <div className="h-full flex flex-col gap-5 items-center justify-center">
         <h1 className="heading-l text-medium-gray">
           This board is empty. Create a new column to get started.
         </h1>
-        <Button size="l">+ Add New Column</Button>
+        <Button size="l" onClick={handleOpenCreateColumnModal}>
+          + Add New Column
+        </Button>
       </div>
     );
 
@@ -174,6 +188,14 @@ export const Board: React.FC = () => {
               <Column key={column._id} column={column} tasks={columnTasks} />
             );
           })}
+          <div className="w-[280px] flex items-center justify-center bg-[#ebf1fb] my-10">
+            <button
+              className="heading-xl text-medium-gray cursor-pointer"
+              onClick={handleOpenCreateColumnModal}
+            >
+              + New Column
+            </button>
+          </div>
         </div>
       </div>
     </DndContext>

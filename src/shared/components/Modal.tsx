@@ -8,6 +8,7 @@ import { DeleteTask } from "../../features/tasks/modals/DeleteTask";
 import { DeleteBoard } from "../../features/boards/modals/DeleteBoard";
 import { UpdateBoard } from "../../features/boards/modals/UpdateBoard";
 import { ManageMembers } from "../../features/boards/modals/ManageMembers";
+import { CreateColumn } from "../../features/columns/modals/CreateColumn";
 
 export const Modal: React.FC = () => {
   const current = useModalStore((store) => store.current);
@@ -23,6 +24,9 @@ export const Modal: React.FC = () => {
       break;
     case "CREATE_BOARD":
       modalContent = <CreateBoard />;
+      break;
+    case "CREATE_COLUMN":
+      modalContent = <CreateColumn />;
       break;
     case "TASK_DETAILS":
       modalContent = <TaskDetails payload={current.payload} />;

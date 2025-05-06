@@ -6,6 +6,7 @@ export type ModalType =
   | { name: "CREATE_BOARD" }
   | { name: "TASK_DETAILS"; payload: { taskId: string } }
   | { name: "CREATE_TASK" }
+  | { name: "CREATE_COLUMN" }
   | { name: "UPDATE_TASK"; payload: { task: Task } }
   | { name: "DELETE_TASK"; payload: { task: Task } }
   | { name: "UPDATE_BOARD"; payload: { board: Board } }
