@@ -1,46 +1,45 @@
-import { useState } from "react";
-import { useRegister } from "../hooks/useRegister";
+import { TextInput } from "../../../shared/components/textInput/TextInput";
 import { Button } from "../../../shared/components/button/Button";
 import { Spinner } from "../../../shared/components/Spinner";
-import { TextInput } from "../../../shared/components/textInput/TextInput";
+import { useRegisterForm } from "../hooks/useRegisterForm";
 
 export const RegisterForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const register = useRegister();
+  const { values, errors, handleChange, handleSubmit, isDisabled, isPending } =
+    useRegisterForm();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    register.mutate({ email, password, passwordConfirm });
-  };
+  let buttonContent;
+  if (isPending) {
+    buttonContent = <Spinner size="md" className="text-white" />;
+  } else if (errors.api) {
+    buttonContent = errors.api;
+  } else {
+    buttonContent = "Register";
+  }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col w-full gap-4">
-      <TextInput value={email} onChange={setEmail} label="Email" />
       <TextInput
-        value={password}
-        onChange={setPassword}
+        value={values.email}
+        onChange={(value) => handleChange("email", value)}
+        label="Email"
+        error={errors.email}
+      />
+      <TextInput
+        value={values.password}
+        onChange={(value) => handleChange("password", value)}
         label="Password"
         type="password"
+        error={errors.password}
       />
       <TextInput
-        value={passwordConfirm}
-        onChange={setPasswordConfirm}
+        value={values.passwordConfirm}
+        onChange={(value) => handleChange("passwordConfirm", value)}
         label="Password Confirm"
         type="password"
+        error={errors.passwordConfirm}
       />
-      <Button
-        className="mt-4"
-        type="submit"
-        size="l"
-        disabled={register.isPending}
-      >
-        {register.isPending ? (
-          <Spinner size="md" className="text-white" />
-        ) : (
-          "Register"
-        )}
+      <Button className="mt-4" type="submit" size="l" disabled={isDisabled}>
+        {buttonContent}
       </Button>
     </form>
   );

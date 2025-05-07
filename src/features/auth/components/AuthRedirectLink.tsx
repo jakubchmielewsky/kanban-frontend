@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 interface AuthRedirectLinkProps {
   question: string;
   linkText: string;
@@ -12,9 +14,9 @@ export const AuthRedirectLink: React.FC<AuthRedirectLinkProps> = ({
   return (
     <p className="text-sm text-center text-medium-gray mt-4">
       {question}{" "}
-      <a href={href} className="text-main-purple font-semibold">
+      <Link to={href} className="text-main-purple font-semibold">
         {linkText}
-      </a>
+      </Link>
     </p>
   );
 };
