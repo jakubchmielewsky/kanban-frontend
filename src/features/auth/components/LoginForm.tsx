@@ -1,39 +1,38 @@
-import { useState } from "react";
-import { useLogin } from "../hooks/useLogin";
 import { TextInput } from "../../../shared/components/textInput/TextInput";
 import { Button } from "../../../shared/components/button/Button";
 import { Spinner } from "../../../shared/components/Spinner";
+import { useLoginForm } from "../hooks/useLoginForm";
 
 export const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const login = useLogin();
+  const { values, errors, handleChange, handleSubmit, isDisabled, isPending } =
+    useLoginForm();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    login.mutate({ email, password });
-  };
+  let buttonContent;
+  if (isPending) {
+    buttonContent = <Spinner size="md" className="text-white" />;
+  } else if (errors.api) {
+    buttonContent = errors.api;
+  } else {
+    buttonContent = "Log In";
+  }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col w-full gap-4">
-      <TextInput value={email} onChange={setEmail} label="Email" />
       <TextInput
-        value={password}
-        onChange={setPassword}
+        value={values.email}
+        onChange={(value) => handleChange("email", value)}
+        label="Email"
+        error={errors.email}
+      />
+      <TextInput
+        value={values.password}
+        onChange={(value) => handleChange("password", value)}
         label="Password"
         type="password"
+        error={errors.password}
       />
-      <Button
-        className="mt-4"
-        type="submit"
-        size="l"
-        disabled={login.isPending}
-      >
-        {login.isPending ? (
-          <Spinner size="md" className="text-white" />
-        ) : (
-          "Log In"
-        )}
+      <Button className="mt-4" type="submit" size="l" disabled={isDisabled}>
+        {buttonContent}
       </Button>
     </form>
   );
