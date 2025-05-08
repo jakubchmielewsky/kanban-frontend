@@ -17,12 +17,20 @@ export const Task: React.FC<Props> = ({ task }) => {
     0
   );
 
-  const { attributes, listeners, setNodeRef, transform } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: task._id,
   });
 
   const style = {
     transform: CSS.Transform.toString(transform),
+    transition,
   };
 
   const handleOpenViewTaskModal = () => {
@@ -38,7 +46,9 @@ export const Task: React.FC<Props> = ({ task }) => {
       {...attributes}
       {...listeners}
       style={style}
-      className="w-full px-4 py-6 bg-white rounded-lg shadow-md cursor-pointer"
+      className={`w-full px-4 py-6 bg-white rounded-lg shadow-md cursor-pointer ${
+        isDragging && "opacity-30"
+      }`}
       onClick={handleOpenViewTaskModal}
     >
       <h4 className="heading-m">{task.title}</h4>

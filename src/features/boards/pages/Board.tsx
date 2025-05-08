@@ -1,159 +1,30 @@
-import { useEffect, useState } from "react";
-import { useFetchColumns } from "../../columns/hooks/useFetchColumns";
-import { useFetchTasks } from "../../tasks/hooks/useFetchTasks";
 import { useBoardSockets } from "../hooks/useBoardSockets";
-import { useSafeParams } from "../../../shared/hooks/useSafeParams";
 import { Button } from "../../../shared/components/button/Button";
 import { Column } from "../../../features/columns/components/Column";
-import { Column as ColumnType } from "../../../shared/types/column";
-import { Task as TaskType } from "../../../shared/types/task";
 import {
   DndContext,
-  DragEndEvent,
-  DragOverEvent,
+  DragOverlay,
   MouseSensor,
   TouchSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { useUpdateTask } from "../../tasks/hooks/useUpdateTask";
-import { useCurrentUser } from "../../../features/auth/hooks/useCurrentUser";
-import { useFetchBoards } from "../hooks/useFetchBoards";
 import { useModalStore } from "../../../shared/stores/useModalStore";
+import { useDragAndDrop } from "../hooks/useDragAndDrop";
+import { useBoardData } from "../hooks/useBoardData";
+import { Task } from "../../../features/tasks/components/Task";
 
 export const Board: React.FC = () => {
-  const { user } = useCurrentUser();
-  const boards = useFetchBoards();
-  const { boardId } = useSafeParams();
-  const selectedBoard =
-    boards.data?.find((board) => board._id === boardId) || null;
-  const columnsQuery = useFetchColumns();
-  const tasksQuery = useFetchTasks(boardId);
-  const updateTaskMutation = useUpdateTask(boardId);
   const { openModal } = useModalStore();
+  const { boardId, isOwner, columns, tasks, isLoading } = useBoardData();
+  const {
+    handleDragOver,
+    handleDragEnd,
+    dndTasks,
+    activeTask,
+    handleDragStart,
+  } = useDragAndDrop(boardId, tasks, columns);
   useBoardSockets(boardId);
-
-  const [columns, setColumns] = useState<ColumnType[]>([]);
-  const [tasks, setTasks] = useState<TaskType[]>([]);
-
-  useEffect(() => {
-    if (columnsQuery.data) {
-      setColumns(columnsQuery.data);
-    }
-  }, [columnsQuery.data]);
-
-  useEffect(() => {
-    if (tasksQuery.data) {
-      setTasks(tasksQuery.data);
-    }
-  }, [tasksQuery.data]);
-
-  const handleDragOver = (event: DragOverEvent) => {
-    const { active, over, delta } = event;
-    if (!active || !over) return;
-
-    const activeId = active.id.toString();
-    const overId = over.id.toString();
-
-    if (activeId === overId) return;
-
-    const activeTaskIndex = tasks.findIndex((task) => task._id === activeId);
-    const activeTask = tasks[activeTaskIndex];
-
-    //over column
-    if (columns.some((column) => column._id === overId)) {
-      const column = columns.find((column) => column._id === overId);
-
-      if (!column) return;
-
-      return setTasks((prev) =>
-        prev.map((task) =>
-          task._id === activeTask._id
-            ? { ...activeTask, columnId: column._id }
-            : task
-        )
-      );
-    }
-
-    //over task
-
-    const overTaskIndex = tasks.findIndex((task) => task._id === overId);
-
-    const overTask = tasks[overTaskIndex];
-    const overColumn = columns.find(
-      (column) => column._id === overTask?.columnId
-    );
-
-    if (!overColumn) return;
-
-    const overColumnTasks = tasks
-      .filter((task) => task.columnId === overColumn._id)
-      .sort((a, b) => a.order - b.order);
-
-    const overColumnTaskIndex = overColumnTasks.findIndex(
-      (task) => task._id === overTask._id
-    );
-
-    let newOrder = 0;
-
-    if (activeTask.columnId === overTask.columnId) {
-      // dragging in the same column
-
-      if (overTask === overColumnTasks[0]) {
-        //first element
-        newOrder = overColumnTasks[0].order / 2;
-      } else if (overTask === overColumnTasks[overColumnTasks.length - 1]) {
-        //last element
-        newOrder = overColumnTasks[overColumnTasks.length - 1].order + 1024;
-      } else {
-        if (delta.y > 0) {
-          //dragging down
-          newOrder =
-            (overTask.order + overColumnTasks[overColumnTaskIndex + 1].order) /
-            2;
-        } else {
-          //dragging up
-          newOrder =
-            (overTask.order + overColumnTasks[overColumnTaskIndex - 1].order) /
-            2;
-        }
-      }
-    } else {
-      // dragging to different columns
-
-      if (overTask == overColumnTasks[overColumnTasks.length - 1]) {
-        //last element
-        newOrder = overColumnTasks[overColumnTasks.length - 1].order + 1024;
-      } else {
-        newOrder =
-          (overTask.order +
-            (overColumnTasks[overColumnTaskIndex - 1]?.order || 0)) /
-          2;
-      }
-    }
-
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task === activeTask
-          ? { ...task, order: newOrder, columnId: overColumn._id }
-          : task
-      )
-    );
-  };
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active } = event;
-    const taskId = active.id.toString();
-
-    const task = tasks.find((task) => task._id === taskId);
-
-    if (!task) return;
-
-    updateTaskMutation.mutateAsync({
-      taskId: task._id,
-      updates: { columnId: task.columnId, order: task.order },
-    });
-  };
 
   const sensors = useSensors(
     useSensor(MouseSensor, {
@@ -163,7 +34,7 @@ export const Board: React.FC = () => {
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 250,
+        delay: 150,
         tolerance: 5,
       },
     })
@@ -173,9 +44,9 @@ export const Board: React.FC = () => {
     openModal({ name: "CREATE_COLUMN" });
   };
 
-  if (!columnsQuery.data || !tasksQuery.data) return null;
+  if (isLoading) return null;
 
-  if (columns.length < 1 && user?._id === selectedBoard?.ownerId)
+  if (columns.length < 1 && isOwner)
     return (
       <div className="h-full flex flex-col gap-5 items-center justify-center">
         <h1 className="heading-l text-medium-gray">
@@ -189,6 +60,7 @@ export const Board: React.FC = () => {
 
   return (
     <DndContext
+      onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       sensors={sensors}
@@ -196,7 +68,7 @@ export const Board: React.FC = () => {
       <div className="h-full w-full overflow-x-auto">
         <div className="flex h-full flex-row gap-x-4 min-w-fit p-4">
           {columns.map((column) => {
-            const columnTasks = tasks
+            const columnTasks = dndTasks
               .filter((task) => task.columnId === column._id)
               .sort((a, b) => a.order - b.order);
 
@@ -204,6 +76,7 @@ export const Board: React.FC = () => {
               <Column key={column._id} column={column} tasks={columnTasks} />
             );
           })}
+          <DragOverlay>{activeTask && <Task task={activeTask} />}</DragOverlay>
           <div className="w-[280px] flex items-center justify-center bg-[#ebf1fb] my-10 rounded-md">
             <button
               className="heading-xl text-medium-gray cursor-pointer"
