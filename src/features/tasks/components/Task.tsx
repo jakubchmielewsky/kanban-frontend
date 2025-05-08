@@ -6,9 +6,10 @@ import { CSS } from "@dnd-kit/utilities";
 
 interface Props {
   task: TaskType;
+  isDragOverlay?: boolean;
 }
 
-export const Task: React.FC<Props> = ({ task }) => {
+export const Task: React.FC<Props> = ({ task, isDragOverlay }) => {
   const openModal = useModalStore((store) => store.openModal);
 
   const totalSubtasks = task.subtasks.length;
@@ -46,8 +47,12 @@ export const Task: React.FC<Props> = ({ task }) => {
       {...attributes}
       {...listeners}
       style={style}
-      className={`w-full px-4 py-6 bg-white rounded-lg shadow-md cursor-pointer ${
+      className={`w-full px-4 py-6 bg-white rounded-lg shadow-md  ${
         isDragging && "opacity-30"
+      } ${
+        isDragOverlay
+          ? "cursor-grabbing opacity-70 border border-dashed"
+          : "cursor-pointer"
       }`}
       onClick={handleOpenViewTaskModal}
     >

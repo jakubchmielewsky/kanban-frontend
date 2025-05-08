@@ -34,8 +34,8 @@ export const Board: React.FC = () => {
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 150,
-        tolerance: 5,
+        delay: 100,
+        tolerance: 10,
       },
     })
   );
@@ -76,7 +76,9 @@ export const Board: React.FC = () => {
               <Column key={column._id} column={column} tasks={columnTasks} />
             );
           })}
-          <DragOverlay>{activeTask && <Task task={activeTask} />}</DragOverlay>
+          <DragOverlay>
+            {activeTask && <Task isDragOverlay task={activeTask} />}
+          </DragOverlay>
           <div className="w-[280px] flex items-center justify-center bg-[#ebf1fb] my-10 rounded-md">
             <button
               className="heading-xl text-medium-gray cursor-pointer"

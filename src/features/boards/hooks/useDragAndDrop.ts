@@ -110,12 +110,16 @@ export const useDragAndDrop = (
         }
       }
 
-      setDragTasks((prev) =>
-        prev.map((t) =>
-          t._id === draggedTask._id
-            ? { ...t, order: newOrder, columnId: targetColumnId }
-            : t
-        )
+      setTimeout(
+        () =>
+          setDragTasks((prev) =>
+            prev.map((t) =>
+              t._id === draggedTask._id
+                ? { ...t, order: newOrder, columnId: targetColumnId }
+                : t
+            )
+          ),
+        100
       );
       prevTopRef.current = currentTop;
     }
