@@ -1,35 +1,20 @@
-import { useFetchBoardMembers } from "../hooks/useFetchBoardMembers";
 import IconDelete from "../../../assets/icon-cross.svg?react";
 import { TextInput } from "../../../shared/components/textInput/TextInput";
-import { useEffect, useState } from "react";
 import { Button } from "../../../shared/components/button/Button";
-import { useAddBoardMember } from "../hooks/useAddBoardMember";
-import { useRemoveBoardMember } from "../hooks/useRemoveBoardMember";
+import { useManageMembers } from "../hooks/useManageMembers";
+import { Spinner } from "@/shared/components/Spinner";
 
 export const ManageMembers: React.FC = () => {
-  const membersQuery = useFetchBoardMembers();
-  const addMemberMutation = useAddBoardMember();
-  const removeMemberMutation = useRemoveBoardMember();
-
-  const [newMemberEmail, setNewMemberEmail] = useState("");
-
-  const members = membersQuery.data;
-
-  useEffect(() => {
-    if (addMemberMutation.isSuccess) setNewMemberEmail("");
-  }, [addMemberMutation.isSuccess]);
-
-  const handleAddMember = () => {
-    addMemberMutation.mutateAsync(newMemberEmail);
-  };
-
-  const handleNewMemberEmailChange = (value: string) => {
-    setNewMemberEmail(value);
-  };
-
-  const handleRemoveMember = (memberEmail: string) => {
-    removeMemberMutation.mutateAsync(memberEmail);
-  };
+  const {
+    members,
+    values,
+    errors,
+    handleChange,
+    handleAddMember,
+    handleRemoveMember,
+    isDisabled,
+    isPending,
+  } = useManageMembers();
 
   return (
     <div className="flex flex-col">
@@ -52,12 +37,13 @@ export const ManageMembers: React.FC = () => {
       )}
       <TextInput
         label="Email"
-        value={newMemberEmail}
-        onChange={(value) => handleNewMemberEmailChange(value)}
+        value={values.newMemberEmail}
+        onChange={(value) => handleChange("newMemberEmail", value)}
         className="mb-2"
+        error={errors.email || errors.api}
       />
-      <Button onClick={handleAddMember} disabled={addMemberMutation.isPending}>
-        Add Member
+      <Button onClick={handleAddMember} disabled={isDisabled}>
+        {isPending ? <Spinner /> : "Add Member"}
       </Button>
     </div>
   );
