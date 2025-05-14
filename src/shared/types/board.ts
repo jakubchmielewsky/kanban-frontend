@@ -10,6 +10,6 @@ export interface CreateBoardDto {
 }
 
 export interface UpdateBoardDto {
-  name: string;
-  ownerId: string;
+  name?: string;
+  ownerId?: string;
 }

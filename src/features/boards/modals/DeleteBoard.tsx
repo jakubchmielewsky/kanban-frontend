@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "../../../shared/components/button/Button";
 import { useModalStore } from "../../../shared/stores/useModalStore";
 import { Board } from "../../../shared/types/board";
@@ -11,13 +12,19 @@ export const DeleteBoard: React.FC<Props> = ({ payload }) => {
   const board = payload.board;
   const deleteBoardMutation = useDeleteBoard();
   const closeModal = useModalStore((s) => s.closeModal);
+  const navigate = useNavigate();
 
-  const handleDeleteBoard = (): void => {
-    deleteBoardMutation.mutateAsync(board._id);
-    closeModal();
+  const handleDeleteBoard = async () => {
+    try {
+      await deleteBoardMutation.mutateAsync(board._id);
+      closeModal();
+      navigate("/boards");
+    } catch (error: any) {
+      alert("implement toast here");
+    }
   };
 
-  const handleCancel = (): void => {
+  const handleCancel = () => {
     closeModal();
   };
   return (
