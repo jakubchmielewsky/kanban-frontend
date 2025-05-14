@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
 import { useModalStore } from "../stores/useModalStore";
-import { CreateBoard } from "../../features/boards/modals/CreateBoard";
+import { CreateBoardModal } from "../../features/boards/modals/CreateBoardModal";
 import { TaskDetails } from "../../features/tasks/modals/TaskDetails";
 import { CreateTask } from "../../features/tasks/modals/CreateTask";
 import { EditTask } from "../../features/tasks/modals/EditTask";
@@ -23,7 +23,7 @@ export const Modal: React.FC = () => {
       modalContent = <ManageMembers />;
       break;
     case "CREATE_BOARD":
-      modalContent = <CreateBoard />;
+      modalContent = <CreateBoardModal />;
       break;
     case "CREATE_COLUMN":
       modalContent = <CreateColumn />;
