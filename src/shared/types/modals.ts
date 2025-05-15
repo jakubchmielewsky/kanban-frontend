@@ -5,7 +5,10 @@ export type ModalType =
   | { name: "MANAGE_MEMBERS" }
   | { name: "CREATE_BOARD" }
   | { name: "TASK_DETAILS"; payload: { taskId: string } }
-  | { name: "CREATE_TASK" }
+  | {
+      name: "CREATE_TASK";
+      payload: { targetColumnId: string; targetColumnName: string };
+    }
   | { name: "CREATE_COLUMN" }
   | { name: "UPDATE_TASK"; payload: { task: Task } }
   | { name: "DELETE_TASK"; payload: { task: Task } }

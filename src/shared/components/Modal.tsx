@@ -32,7 +32,7 @@ export const Modal: React.FC = () => {
       modalContent = <TaskDetails payload={current.payload} />;
       break;
     case "CREATE_TASK":
-      modalContent = <CreateTask />;
+      modalContent = <CreateTask payload={current.payload} />;
       break;
     case "UPDATE_TASK":
       modalContent = <EditTask payload={current.payload} />;

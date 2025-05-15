@@ -1,16 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { TextInput } from "../../../shared/components/textInput/TextInput";
 import { Button } from "../../../shared/components/button/Button";
 import { useFetchColumns } from "../../columns/hooks/useFetchColumns";
-import { Column } from "../../../shared/types/column";
 import { useCreateTask } from "../hooks/useCreateTask";
 import { AddSubtasksList } from "../components/AddSubtasksList";
-import { Dropdown } from "../../../shared/components/Dropdown";
 import { Spinner } from "../../../shared/components/Spinner";
 import { useModalStore } from "../../../shared/stores/useModalStore";
 import { useSafeParams } from "../../../shared/hooks/useSafeParams";
 
-export const CreateTask: React.FC = () => {
+interface Payload {
+  payload: {
+    targetColumnId: string;
+    targetColumnName: string;
+  };
+}
+
+export const CreateTask: React.FC<Payload> = ({ payload }) => {
+  const { targetColumnId, targetColumnName } = payload;
+
   const closeModal = useModalStore((s) => s.closeModal);
   const { boardId } = useSafeParams();
   const columnsQuery = useFetchColumns();
@@ -19,7 +26,6 @@ export const CreateTask: React.FC = () => {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedColumn, setSelectedColumn] = useState<Column | null>();
   const [localSubtasks, setLocalSubtasks] = useState<
     {
       _id: string;
@@ -27,11 +33,6 @@ export const CreateTask: React.FC = () => {
       isCompleted: boolean;
     }[]
   >([]);
-
-  useEffect(() => {
-    if (columnsQuery.data && !selectedColumn)
-      setSelectedColumn(columnsQuery.data[0] ?? null);
-  }, [columnsQuery.data, selectedColumn]);
 
   if (columnsQuery.isLoading) return <Spinner size="xl" />;
   if (!columnsQuery.data) return null;
@@ -58,13 +59,7 @@ export const CreateTask: React.FC = () => {
     setLocalSubtasks(newLocalSubtasks);
   };
 
-  const handleSelectColumn = (column: Column) => {
-    setSelectedColumn(column);
-  };
-
   const handleSubmit = () => {
-    if (!selectedColumn) return;
-
     const task = {
       title,
       description,
@@ -72,7 +67,7 @@ export const CreateTask: React.FC = () => {
         title: subtask.title,
         isCompleted: subtask.isCompleted,
       })),
-      columnId: selectedColumn._id,
+      columnId: targetColumnId,
     };
 
     createTaskMutation.mutateAsync({ task: task });
@@ -81,7 +76,7 @@ export const CreateTask: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h3 className="heading-l">Add New Task</h3>
+      <h3 className="heading-l">Add new task to "{targetColumnName}"</h3>
 
       <TextInput label="Title" value={title} onChange={setTitle} />
 
@@ -97,18 +92,6 @@ export const CreateTask: React.FC = () => {
         onChange={handleSubtaskChange}
         onRemove={handleSubtaskRemove}
       />
-
-      <div>
-        <h5 className="body-m mb-2 text-medium-gray">Status</h5>
-
-        {columnsQuery.data && columnsQuery.data.length > 0 && (
-          <Dropdown
-            options={columnsQuery.data}
-            currentValue={selectedColumn ?? null}
-            handleSelect={handleSelectColumn}
-          />
-        )}
-      </div>
 
       <Button variant="primary" onClick={handleSubmit}>
         Create Task

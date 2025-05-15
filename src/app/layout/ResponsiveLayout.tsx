@@ -5,7 +5,8 @@ import { MobileLayout } from "./MobileLayout";
 
 export const ResponsiveLayout = () => {
   const isMobile = useIsMobile();
-  const Layout = isMobile ? MobileLayout : DesktopLayout;
+  //const Layout = isMobile ? MobileLayout : DesktopLayout;
+  const Layout = DesktopLayout;
 
   return (
     <Layout>
