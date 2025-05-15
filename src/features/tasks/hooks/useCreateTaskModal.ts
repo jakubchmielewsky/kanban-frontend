@@ -1,8 +1,7 @@
-import { useSafeParams } from "@/shared/hooks/useSafeParams";
-import { useModalStore } from "@/shared/stores/useModalStore";
-import { useFetchTasks } from "./useFetchTasks";
-import { useEffect, useState } from "react";
-import { useUpdateTask } from "./useUpdateTask";
+import { useState } from "react";
+import { useCreateTask } from "../hooks/useCreateTask";
+import { useModalStore } from "../../../shared/stores/useModalStore";
+import { useSafeParams } from "../../../shared/hooks/useSafeParams";
 import { CreateEditTaskSchema } from "../schemas/createEditTaskSchema";
 
 interface formData {
@@ -11,12 +10,11 @@ interface formData {
   subtasks: { _id: string; title: string; isCompleted: boolean }[];
 }
 
-export const useEditTaskModal = (taskId: string) => {
+export const useCreateTaskModal = (targetColumnId: string) => {
   const closeModal = useModalStore((s) => s.closeModal);
   const { boardId } = useSafeParams();
-  const tasksQuery = useFetchTasks(boardId);
-  const task = tasksQuery.data?.find((t) => t._id === taskId);
-  const updateTaskMutation = useUpdateTask(boardId);
+
+  const createTaskMutation = useCreateTask(boardId);
 
   const [formData, setFormData] = useState<formData>({
     title: "",
@@ -29,13 +27,6 @@ export const useEditTaskModal = (taskId: string) => {
     description?: string;
     api?: string;
   }>();
-
-  useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      ...task,
-    }));
-  }, [task]);
 
   const handleAddSubtask = () => {
     setFormData((prev) => ({
@@ -63,7 +54,7 @@ export const useEditTaskModal = (taskId: string) => {
     }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const validation = CreateEditTaskSchema.safeParse(formData);
 
     if (!validation.success) {
@@ -77,29 +68,32 @@ export const useEditTaskModal = (taskId: string) => {
       return;
     }
 
+    const task = {
+      title: formData.title,
+      description: formData.description,
+      subtasks: formData.subtasks.map((subtask) => ({
+        title: subtask.title,
+        isCompleted: subtask.isCompleted,
+      })),
+      columnId: targetColumnId,
+    };
+
     try {
-      await updateTaskMutation.mutateAsync({
-        taskId,
-        updates: {
-          ...task,
-          ...formData,
-        },
-      });
+      createTaskMutation.mutateAsync({ task: task });
       closeModal();
     } catch (e) {
-      // TODO: obsługa błędów (toast, log)
+      //TODO: toast
     }
   };
 
   return {
     formData,
+    errors,
     setFormData,
-    handleSubmit,
     handleAddSubtask,
     handleSubtaskChange,
     handleSubtaskRemove,
-    setErrors,
-    errors,
-    isPending: updateTaskMutation.isPending,
+    handleSubmit,
+    isPending: createTaskMutation.isPending,
   };
 };

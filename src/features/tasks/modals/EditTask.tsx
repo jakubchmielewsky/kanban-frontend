@@ -29,7 +29,7 @@ export const EditTask: React.FC<Props> = ({ payload }) => {
         label="Title"
         value={formData.title}
         onChange={(value) => setFormData((prev) => ({ ...prev, title: value }))}
-        error={errors.title}
+        error={errors?.title}
       />
 
       <TextInput
@@ -38,7 +38,7 @@ export const EditTask: React.FC<Props> = ({ payload }) => {
         onChange={(value) =>
           setFormData((prev) => ({ ...prev, description: value }))
         }
-        error={errors.description}
+        error={errors?.description}
       />
 
       <AddSubtasksList

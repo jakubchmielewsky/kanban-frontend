@@ -23,7 +23,7 @@ export const Column: React.FC<ColumnProps> = ({ column, tasks }) => {
   };
 
   return (
-    <div className="w-[260px] flex flex-col bg-white shadow-lg h-fit rounded-lg p-2 gap-2">
+    <div className="w-[260px] flex flex-col bg-white shadow-md h-fit rounded-lg p-2 gap-2">
       <h3 className="heading-m text-medium-gray my-3 text-center">
         {`${column.name.toUpperCase()} (${tasks.length})`}
       </h3>
