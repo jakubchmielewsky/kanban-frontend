@@ -5,6 +5,7 @@ import { SortableContext } from "@dnd-kit/sortable";
 import { useDroppable } from "@dnd-kit/core";
 import { Button } from "@/shared/components/button/Button";
 import { useModalStore } from "@/shared/stores/useModalStore";
+import { useMemo } from "react";
 
 interface ColumnProps {
   column: ColumnType;
@@ -14,6 +15,7 @@ interface ColumnProps {
 export const Column: React.FC<ColumnProps> = ({ column, tasks }) => {
   const { setNodeRef } = useDroppable({ id: column._id });
   const openModal = useModalStore((s) => s.openModal);
+  const dndTasksIds = useMemo(() => tasks.map((task) => task._id), [tasks]);
 
   const handleAddNewTask = () => {
     openModal({
@@ -27,8 +29,8 @@ export const Column: React.FC<ColumnProps> = ({ column, tasks }) => {
       <h3 className="heading-m text-medium-gray my-3 text-center">
         {`${column.name.toUpperCase()} (${tasks.length})`}
       </h3>
-      <div ref={setNodeRef} className="flex flex-col gap-2">
-        <SortableContext items={tasks.map((task) => task._id)}>
+      <div ref={setNodeRef} className="flex flex-col gap-2 pb-1">
+        <SortableContext items={dndTasksIds}>
           {tasks.map((task) => (
             <TaskComponent key={task._id} task={task} />
           ))}

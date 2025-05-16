@@ -11,32 +11,22 @@ export const useDragAndDrop = (
   initialTasks: Task[],
   columns: Column[]
 ) => {
-  const [dragTasks, setDragTasks] = useState<Task[]>(initialTasks);
-  const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const updateTask = useUpdateTask(boardId);
+  const [dndTasks, setDndTasks] = useState<Task[]>([]);
+  const [overlayItem, setOverlayItem] = useState<Task | null>(null);
+  const updateTaskMutation = useUpdateTask(boardId);
 
   useEffect(() => {
-    setDragTasks((prev) => {
-      const sameLength = prev.length === initialTasks.length;
-      const sameContent =
-        sameLength && prev.every((t, i) => t === initialTasks[i]);
-
-      if (!sameContent) {
-        return initialTasks;
-      }
-
-      return prev;
-    });
+    setDndTasks(initialTasks);
   }, [initialTasks]);
 
   const handleDragStart = ({ active }: DragStartEvent) => {
-    const task = dragTasks.find((t) => t._id === active.id.toString()) || null;
-    setActiveTask(task);
+    const task = dndTasks.find((t) => t._id === active.id.toString()) || null;
+    setOverlayItem(task);
   };
 
-  const getTasksInColumn = (columnId: string) => {
-    return dragTasks
-      .filter((t) => t.columnId === columnId)
+  const getTasksInCurrentColumn = (columnId: string) => {
+    return dndTasks
+      .filter((dndTask) => dndTask.columnId === columnId)
       .sort((a, b) => a.order - b.order);
   };
 
@@ -44,109 +34,119 @@ export const useDragAndDrop = (
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
-    const draggedTask = dragTasks.find((t) => t._id === activeTask?._id);
-    if (!active || !over || !draggedTask) return;
+    if (!over) return;
 
-    if (!event.over) return;
-    const currentTop = event.over.rect.top;
+    const activeId = active.id;
+    const overId = over.id;
+
+    if (activeId === overId) return;
+
+    const activeTask = dndTasks.find((t) => t._id === activeId.toString());
+    if (!activeTask) return;
+    const overTask = dndTasks.find((t) => t._id === overId.toString());
+    const overColumn = columns.find((c) => c._id === overId);
+
+    const currentTop = event.over?.rect.top ?? 0;
     const prevTop = prevTopRef.current ?? currentTop;
     const movedDown = currentTop > prevTop;
 
-    const overId = over.id.toString();
+    if (overTask) {
+      setDndTasks((dndTasks) => {
+        const tasksInCurrentColumn = getTasksInCurrentColumn(overTask.columnId);
+        const overTaskIndexInCurrentColumn = tasksInCurrentColumn.findIndex(
+          (t) => t._id === overTask._id
+        );
 
-    const overColumn = columns.find((c) => c._id === overId);
-    const overTask = dragTasks.find((t) => t._id === overId);
+        if (activeTask.columnId !== overTask.columnId) {
+          const newColumnId = overTask.columnId;
+          const newOrder =
+            ((tasksInCurrentColumn[overTaskIndexInCurrentColumn - 1]?.order ??
+              0) +
+              tasksInCurrentColumn[overTaskIndexInCurrentColumn].order) /
+            2;
+
+          return dndTasks.map((dndTask) =>
+            dndTask._id === activeTask._id
+              ? { ...dndTask, columnId: newColumnId, order: newOrder }
+              : dndTask
+          );
+        }
+        return dndTasks.map((dndTask) => {
+          if (dndTask._id === activeTask._id) {
+            if (movedDown) {
+              return {
+                ...dndTask,
+                order: tasksInCurrentColumn[overTaskIndexInCurrentColumn + 1]
+                  ? ((tasksInCurrentColumn[overTaskIndexInCurrentColumn - 1]
+                      ?.order ?? 0) +
+                      tasksInCurrentColumn[overTaskIndexInCurrentColumn]
+                        .order) /
+                    2
+                  : tasksInCurrentColumn[overTaskIndexInCurrentColumn].order +
+                    GAP,
+              };
+            }
+
+            return {
+              ...dndTask,
+              order:
+                ((tasksInCurrentColumn[overTaskIndexInCurrentColumn - 1]
+                  ?.order ?? 0) +
+                  tasksInCurrentColumn[overTaskIndexInCurrentColumn].order) /
+                2,
+            };
+          }
+          return dndTask;
+        });
+      });
+      return;
+    }
 
     if (overColumn) {
-      const tasksInTargetColumn = getTasksInColumn(overColumn._id);
-      const lastItemOrder =
-        tasksInTargetColumn[tasksInTargetColumn.length - 1]?.order || 0;
+      setDndTasks((dndTasks) => {
+        const tasksInCurrentColumn = getTasksInCurrentColumn(overColumn._id);
 
-      return setDragTasks((prev) =>
-        prev.map((t) =>
-          t._id === draggedTask?._id
-            ? { ...t, columnId: overColumn._id, order: lastItemOrder + GAP }
-            : t
-        )
-      );
+        const lastElementOrder =
+          tasksInCurrentColumn[tasksInCurrentColumn.length - 1]?.order ?? 0;
+
+        return dndTasks.map((dndTask) =>
+          dndTask._id === activeTask._id
+            ? {
+                ...dndTask,
+                columnId: overColumn._id,
+                order: lastElementOrder + GAP,
+              }
+            : dndTask
+        );
+      });
     }
-
-    if (overTask) {
-      const targetColumnId = overTask.columnId;
-      const tasksInTargetColumn = getTasksInColumn(targetColumnId);
-      const overTaskIndex = tasksInTargetColumn.findIndex(
-        (t) => t === overTask
-      );
-
-      const isColumnChanged = draggedTask.columnId !== targetColumnId;
-      const isOverLastItem =
-        overTask === tasksInTargetColumn[tasksInTargetColumn.length - 1];
-
-      let newOrder;
-      if (isColumnChanged) {
-        // FIXME: bug with last element when dragging to different column
-        newOrder =
-          ((tasksInTargetColumn[overTaskIndex - 1]?.order ?? 0) +
-            tasksInTargetColumn[overTaskIndex]?.order) /
-          2;
-      } else {
-        if (overTask._id === draggedTask._id) {
-          newOrder = overTask.order;
-        } else if (isOverLastItem) {
-          newOrder =
-            tasksInTargetColumn[tasksInTargetColumn.length - 1]?.order + GAP;
-        } else {
-          if (movedDown) {
-            newOrder =
-              (tasksInTargetColumn[overTaskIndex + 1]?.order +
-                tasksInTargetColumn[overTaskIndex]?.order) /
-              2;
-          } else {
-            newOrder =
-              ((tasksInTargetColumn[overTaskIndex - 1]?.order ?? 0) +
-                tasksInTargetColumn[overTaskIndex]?.order) /
-              2;
-          }
-        }
-      }
-
-      setTimeout(
-        () =>
-          setDragTasks((prev) =>
-            prev.map((t) =>
-              t._id === draggedTask._id
-                ? { ...t, order: newOrder, columnId: targetColumnId }
-                : t
-            )
-          ),
-        100
-      );
-      prevTopRef.current = currentTop;
-    }
+    prevTopRef.current = currentTop;
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const taskId = event.active.id.toString();
-    const updatedTask = dragTasks.find((t) => t._id === taskId);
+    const updatedTask = dndTasks.find((t) => t._id === taskId);
+
     if (
       !updatedTask ||
-      (updatedTask.columnId === activeTask?.columnId &&
-        updatedTask.order === activeTask.order)
+      (updatedTask.columnId === overlayItem?.columnId &&
+        updatedTask.order === overlayItem?.order)
     )
       return;
 
-    updateTask.mutateAsync({
+    updateTaskMutation.mutateAsync({
       taskId: updatedTask._id,
       updates: { columnId: updatedTask.columnId, order: updatedTask.order },
     });
-    setActiveTask(null);
+
+    setOverlayItem(null);
   };
 
   return {
     handleDragOver,
     handleDragEnd,
-    dndTasks: dragTasks,
-    activeTask,
+    dndTasks,
+    activeTask: overlayItem,
     handleDragStart,
   };
 };
