@@ -8,7 +8,7 @@ import {
   Outlet,
 } from "react-router-dom";
 import { ProtectedRoute } from "../shared/routing/ProtectedRoute";
-import { ResponsiveLayout } from "./layout/ResponsiveLayout";
+import { Layout } from "./Layout";
 import { Board } from "../features/boards/pages/Board";
 
 export function AppRouter() {
@@ -22,7 +22,7 @@ export function AppRouter() {
           path="/"
           element={
             <ProtectedRoute>
-              <ResponsiveLayout />
+              <Layout />
             </ProtectedRoute>
           }
         >
