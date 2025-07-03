@@ -10,6 +10,8 @@ import {
 import { ProtectedRoute } from "../shared/routing/ProtectedRoute";
 import { Layout } from "./Layout";
 import { Board } from "../features/boards/pages/Board";
+import { VerifyEmailPage } from "@/features/auth/pages/VerifyEmailPage";
+import { ResendVerificationPage } from "@/features/auth/pages/ResendVerificationPage";
 
 export function AppRouter() {
   return (
@@ -17,6 +19,11 @@ export function AppRouter() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
+        <Route
+          path="/resend-verification"
+          element={<ResendVerificationPage />}
+        />
 
         <Route
           path="/"

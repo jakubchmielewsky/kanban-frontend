@@ -1,17 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../api";
-import { useAuthStore } from "../stores/authStore";
-import { useNavigate } from "react-router-dom";
+import { RegisterData } from "@/shared/types/auth";
+import { ApiErrorResponse, ApiResponse } from "@/shared/types/api";
+import { AxiosError } from "axios";
 
 export const useRegister = () => {
-  const setUser = useAuthStore((state) => state.setUser);
-  const navigate = useNavigate();
-
-  return useMutation({
+  return useMutation<
+    ApiResponse<void>,
+    AxiosError<ApiErrorResponse>,
+    RegisterData
+  >({
     mutationFn: registerUser,
-    onSuccess: (data) => {
-      setUser(data);
-      navigate("/boards", { replace: true });
-    },
   });
 };

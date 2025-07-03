@@ -15,7 +15,7 @@
 }
 
 @theme {
-  --color-*: initial;
+  /* --color-*: initial; */
   --color-black: #000112;
   --color-very-dark-gray: #20212c;
   --color-dark-gray: #2b2c37;

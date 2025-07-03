@@ -6,7 +6,7 @@ export interface LoginData {
 export interface RegisterData {
   email: string;
   password: string;
-  passwordConfirm: string;
+  confirmPassword: string;
 }
 
 export interface User {
