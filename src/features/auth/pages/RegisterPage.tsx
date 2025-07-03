@@ -1,4 +1,4 @@
-import { AuthRedirectLink } from "../components/AuthRedirectLink";
+//import { AuthRedirectLink } from "../components/AuthRedirectLink";
 import { RegisterForm } from "../components/RegisterForm";
 import LogoDark from "../../../assets/logo-dark.svg?react";
 
@@ -14,11 +14,11 @@ export const RegisterPage = () => {
           Please log in to your account
         </p>
         <RegisterForm />
-        <AuthRedirectLink
+        {/* <AuthRedirectLink
           question="Already have an account?"
           linkText="Sign In"
           href="/login"
-        />
+        /> */}
       </div>
     </div>
   );

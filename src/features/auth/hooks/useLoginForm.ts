@@ -1,61 +1,45 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useLogin } from "./useLogin";
 import { loginSchema } from "../schemas/loginSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginFormValues } from "../schemas/loginSchema";
+import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../stores/authStore";
+import { ApiErrorResponse } from "@/shared/types/api";
+import { toast } from "sonner";
 
 export const useLoginForm = () => {
-  const [values, setValues] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState<{
-    email?: string;
-    password?: string;
-    api?: string;
-  }>({});
+  const setUser = useAuthStore((state) => state.setUser);
+  const navigate = useNavigate();
+
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
   const loginMutation = useLogin();
 
-  type Field = keyof typeof values;
-  const handleChange = (field: Field, value: string) => {
-    setErrors((prev) => ({ ...prev, [field]: "", api: "" }));
-    setValues((prev) => ({ ...prev, [field]: value }));
+  const onSubmit = (data: LoginFormValues) => {
+    loginMutation.mutate(data, {
+      onSuccess: (data) => {
+        setUser(data.data);
+        navigate("/boards");
+      },
+      onError: (error: AxiosError<ApiErrorResponse>) => {
+        toast.error(
+          error.response?.data?.message || "Login failed. Please try again."
+        );
+      },
+    });
   };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const result = loginSchema.safeParse(values);
-
-    if (!result.success) {
-      const fieldErrors = result.error.flatten().fieldErrors;
-      setErrors((prev) => ({
-        ...prev,
-        email: fieldErrors.email?.[0],
-        password: fieldErrors.password?.[0],
-      }));
-      return;
-    }
-
-    setErrors({});
-    try {
-      await loginMutation.mutateAsync(result.data);
-    } catch (error: any) {
-      if (error?.response?.data?.message) {
-        setErrors((prev) => ({ ...prev, api: error.response.data.message }));
-      } else {
-        setErrors((prev) => ({ ...prev, api: "Authentication failed" }));
-      }
-    }
-  };
-
-  const isDisabled =
-    loginMutation.isPending ||
-    !!errors.email ||
-    !!errors.password ||
-    !!errors.api;
 
   return {
-    values,
-    errors,
-    handleChange,
-    handleSubmit,
-    isDisabled,
+    form,
+    onSubmit: form.handleSubmit(onSubmit),
     isPending: loginMutation.isPending,
   };
 };

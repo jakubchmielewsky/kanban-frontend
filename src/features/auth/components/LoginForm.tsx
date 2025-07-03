@@ -13,7 +13,7 @@ export const LoginForm = () => {
   } else if (errors.api) {
     buttonContent = errors.api;
   } else {
-    buttonContent = "Log In";
+    buttonContent = "Login";
   }
 
   return (
