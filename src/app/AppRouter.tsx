@@ -12,6 +12,8 @@ import { Layout } from "./Layout";
 import { Board } from "../features/boards/pages/Board";
 import { VerifyEmailPage } from "@/features/auth/pages/VerifyEmailPage";
 import { ResendVerificationPage } from "@/features/auth/pages/ResendVerificationPage";
+import { ForgotPasswordPage } from "@/features/auth/pages/ForgotPasswordPage";
+import { ResetPasswordPage } from "@/features/auth/pages/ResetPasswordPage";
 
 export function AppRouter() {
   return (
@@ -20,6 +22,8 @@ export function AppRouter() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route
           path="/resend-verification"
           element={<ResendVerificationPage />}

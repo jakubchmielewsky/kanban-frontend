@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -10,22 +16,23 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useResendVerificationForm } from "../hooks/useResendVerificationForm";
 import { Loader2 } from "lucide-react";
+import { useForgotPasswordForm } from "../hooks/useForgotPasswordForm";
 
-export const ResendVerificationForm = ({
+export const ForgotPasswordForm = ({
   className,
   ...props
 }: React.ComponentProps<"div">) => {
-  const { form, onSubmit, isPending } = useResendVerificationForm();
+  const { form, onSubmit, isPending } = useForgotPasswordForm();
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-center pb-4">
-            Resend Verification Email
-          </CardTitle>
+          <CardTitle className="text-center pb-4">Forgot Password?</CardTitle>
+          <CardDescription className="text-center">
+            Enter your email below to receive a password reset link
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -56,7 +63,7 @@ export const ResendVerificationForm = ({
                     Sending...
                   </>
                 ) : (
-                  "Resend Email"
+                  "Send Reset Link"
                 )}
               </Button>
             </form>

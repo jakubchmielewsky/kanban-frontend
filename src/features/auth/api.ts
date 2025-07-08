@@ -1,6 +1,11 @@
 import { ApiResponse } from "@/shared/types/api";
 import api from "../../lib/axios";
-import { LoginData, RegisterData, User } from "@/shared/types/auth";
+import {
+  LoginData,
+  RegisterData,
+  ResetPasswordData,
+  User,
+} from "@/shared/types/auth";
 
 export const loginUser = async (
   data: LoginData
@@ -33,6 +38,24 @@ export const resendVerificationEmail = async (
   email: string
 ): Promise<ApiResponse<void>> => {
   const res = await api.post("/auth/resend", { email });
+  return res.data;
+};
+
+export const forgotPassword = async (
+  email: string
+): Promise<ApiResponse<void>> => {
+  const res = await api.post("/auth/forgot-password", { email });
+  return res.data;
+};
+
+export const resetPassword = async (
+  data: ResetPasswordData
+): Promise<ApiResponse<void>> => {
+  const res = await api.post("/auth/reset-password", {
+    resetToken: data.resetToken,
+    newPassword: data.newPassword,
+    confirmNewPassword: data.confirmNewPassword,
+  });
   return res.data;
 };
 

@@ -30,8 +30,10 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-center pb-4">
+            Login to your account
+          </CardTitle>
+          <CardDescription className="text-center">
             Enter your email below to login to your account
           </CardDescription>
         </CardHeader>
@@ -65,12 +67,12 @@ export function LoginForm({
                     <FormItem className="grid gap-3">
                       <div className="flex items-center">
                         <FormLabel htmlFor="password">Password</FormLabel>
-                        <a
-                          href="#"
+                        <Link
+                          to="/forgot-password"
                           className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                         >
                           Forgot your password?
-                        </a>
+                        </Link>
                       </div>
                       <FormControl>
                         <Input id="password" type="password" {...field} />
