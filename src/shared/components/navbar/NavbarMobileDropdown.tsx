@@ -1,4 +1,4 @@
-import { useFetchBoards } from "../../../features/boards/hooks/useFetchBoards";
+import { useFetchBoards } from "../../../features/boards/hooks/useGetTeamBoards";
 import { useParams } from "react-router-dom";
 import IconChevronDown from "../../..//assets/icon-chevron-down.svg?react";
 import IconChevronUp from "../../..//assets/icon-chevron-up.svg?react";

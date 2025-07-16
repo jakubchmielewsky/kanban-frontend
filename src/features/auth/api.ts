@@ -21,8 +21,9 @@ export const registerUser = async (
   return res.data;
 };
 
-export const logoutUser = async (): Promise<void> => {
-  await api.get("/auth/logout");
+export const logoutUser = async (): Promise<ApiResponse<void>> => {
+  const res = await api.get("/auth/logout");
+  return res.data;
 };
 
 export const verifyEmail = async (

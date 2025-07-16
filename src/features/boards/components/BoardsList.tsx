@@ -1,4 +1,4 @@
-import { useFetchBoards } from "../hooks/useFetchBoards";
+import { useFetchBoards } from "../hooks/useGetTeamBoards";
 import { Button } from "../../../shared/components/button/Button";
 import IconBoard from "../../../assets/icon-board.svg?react";
 import { useNavigate } from "react-router-dom";

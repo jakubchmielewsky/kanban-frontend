@@ -27,7 +27,7 @@ export const useLoginForm = () => {
     loginMutation.mutate(data, {
       onSuccess: (data) => {
         setUser(data.data);
-        navigate("/boards");
+        navigate("/dashboard", { replace: true });
       },
       onError: (error: AxiosError<ApiErrorResponse>) => {
         toast.error(

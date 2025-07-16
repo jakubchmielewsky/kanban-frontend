@@ -6,13 +6,13 @@ type ProtectedRouteProps = {
 };
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { user, isFetching, isLoading } = useCurrentUser();
+  const userQuery = useCurrentUser();
 
-  if (isFetching || isLoading) {
+  if (userQuery.isFetching || userQuery.isLoading) {
     return null;
   }
 
-  if (!user) {
+  if (!userQuery.data) {
     return <Navigate to="/login" replace />;
   }
 

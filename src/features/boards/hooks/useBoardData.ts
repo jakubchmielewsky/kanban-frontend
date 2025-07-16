@@ -1,4 +1,4 @@
-import { useFetchBoards } from "../hooks/useFetchBoards";
+import { useFetchBoards } from "./useGetTeamBoards";
 import { useFetchColumns } from "../../columns/hooks/useFetchColumns";
 import { useFetchTasks } from "../../tasks/hooks/useFetchTasks";
 import { useSafeParams } from "../../../shared/hooks/useSafeParams";

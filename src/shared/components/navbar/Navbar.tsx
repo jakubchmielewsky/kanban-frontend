@@ -2,7 +2,7 @@ import LogoMobile from "../../../assets/logo-mobile.svg?react";
 import LogoDark from "../../../assets/logo-dark.svg?react";
 import { useIsMobile } from "../../hooks/useIsMobile";
 import IconVerticalEllipsis from "../../../assets/icon-vertical-ellipsis.svg?react";
-import { useFetchBoards } from "../../../features/boards/hooks/useFetchBoards";
+import { useFetchBoards } from "../../../features/boards/hooks/useGetTeamBoards";
 import { useModalStore } from "../../stores/useModalStore";
 import { ContextMenu } from "../ContextMenu";
 import { useContextMenu } from "../../hooks/useContextMenu";
