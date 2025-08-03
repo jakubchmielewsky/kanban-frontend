@@ -1,5 +1,5 @@
 import { Button } from "../../../shared/components/button/Button";
-import { Task } from "../../../shared/types/task";
+import { Task } from "../../../shared/types/card";
 import { useDeleteTaskModal } from "../hooks/useDeleteTaskModal";
 
 interface Props {

@@ -1,5 +1,5 @@
 import { useSafeParams } from "@/shared/hooks/useSafeParams";
-import { useFetchTasks } from "./useFetchTasks";
+import { useFetchTasks } from "./useFetchCards";
 import { useModalStore } from "@/shared/stores/useModalStore";
 import { useUpdateTask } from "./useUpdateTask";
 

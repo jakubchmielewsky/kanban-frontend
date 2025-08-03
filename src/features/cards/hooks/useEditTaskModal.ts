@@ -1,6 +1,6 @@
 import { useSafeParams } from "@/shared/hooks/useSafeParams";
 import { useModalStore } from "@/shared/stores/useModalStore";
-import { useFetchTasks } from "./useFetchTasks";
+import { useFetchTasks } from "./useFetchCards";
 import { useEffect, useState } from "react";
 import { useUpdateTask } from "./useUpdateTask";
 import { CreateEditTaskSchema } from "../schemas/createEditTaskSchema";

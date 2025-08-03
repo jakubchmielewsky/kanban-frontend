@@ -2,7 +2,7 @@ import { TextInput } from "../../../shared/components/textInput/TextInput";
 import { Button } from "../../../shared/components/button/Button";
 import { AddSubtasksList } from "../../tasks/components/AddSubtasksList";
 import { Spinner } from "../../../shared/components/Spinner";
-import { Task } from "../../../shared/types/task";
+import { Task } from "../../../shared/types/card";
 import { useEditTaskModal } from "../hooks/useEditTaskModal";
 
 interface Props {

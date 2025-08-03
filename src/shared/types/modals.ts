@@ -1,5 +1,5 @@
 import { Board } from "./board";
-import { Task } from "./task";
+import { Task } from "./card";
 
 export type ModalType =
   | { name: "MANAGE_MEMBERS" }

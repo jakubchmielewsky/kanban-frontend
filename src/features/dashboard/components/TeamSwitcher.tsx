@@ -18,9 +18,11 @@ import {
 import { Team } from "@/shared/types/team";
 import { useActiveTeamStore } from "@/shared/stores/useActiveTeamStore";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function TeamSwitcher({ teams }: { teams: Team[] }) {
   const { isMobile } = useSidebar();
+  const navigate = useNavigate();
 
   const { activeTeam, setActiveTeam } = useActiveTeamStore();
 
@@ -29,6 +31,12 @@ export function TeamSwitcher({ teams }: { teams: Team[] }) {
       setActiveTeam(teams[1]);
     }
   }, [activeTeam, setActiveTeam, teams]);
+
+  const setActiveTeamHandler = (team: Team) => {
+    if (team === activeTeam) return;
+    setActiveTeam(team);
+    navigate("/dashboard");
+  };
 
   return (
     <SidebarMenu>
@@ -63,7 +71,7 @@ export function TeamSwitcher({ teams }: { teams: Team[] }) {
             {teams.map((team, index) => (
               <DropdownMenuItem
                 key={team.teamData._id}
-                onClick={() => setActiveTeam(team)}
+                onClick={() => setActiveTeamHandler(team)}
                 className="gap-2 p-2"
               >
                 {/* <div className="flex size-6 items-center justify-center rounded-md border">

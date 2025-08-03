@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTask } from "../api";
-import { Task } from "../../../shared/types/task";
+import { Task } from "../../../shared/types/card";
 
 export interface DeleteTaskMutation {
   taskId: string;

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { socket } from "../../../lib/socket";
-import { Task } from "../../../shared/types/task";
+import { Task } from "../../../shared/types/card";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const useBoardSockets = (boardId: string) => {

@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateTask } from "../api";
-import { Task, UpdateTaskDto } from "../../../shared/types/task";
+import { Task, UpdateTaskDto } from "../../../shared/types/card";
 
 export interface UpdateTaskMutation {
   taskId: string;

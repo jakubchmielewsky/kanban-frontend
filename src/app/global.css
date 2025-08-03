@@ -184,4 +184,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  html,
+  body,
+  #root {
+    @apply h-svh w-svw overflow-hidden;
+  }
 }

@@ -8,7 +8,7 @@ import { DeleteTask } from "../../features/tasks/modals/DeleteTask";
 import { DeleteBoard } from "../../features/boards/modals/DeleteBoard";
 import { UpdateBoard } from "../../features/boards/modals/UpdateBoard";
 import { ManageMembers } from "../../features/boards/modals/ManageMembers";
-import { CreateColumn } from "../../features/columns/modals/CreateColumn";
+import { CreateColumn } from "../../features/lists/modals/CreateColumn";
 
 export const Modal: React.FC = () => {
   const current = useModalStore((store) => store.current);

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { DragEndEvent, DragOverEvent, DragStartEvent } from "@dnd-kit/core";
-import { Task } from "../../../shared/types/task";
+import { Task } from "../../../shared/types/card";
 import { Column } from "../../../shared/types/column";
 import { useUpdateTask } from "../../tasks/hooks/useUpdateTask";
 

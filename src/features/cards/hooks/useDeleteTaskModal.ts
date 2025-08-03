@@ -1,4 +1,4 @@
-import { Task } from "@/shared/types/task";
+import { Task } from "@/shared/types/card";
 import { useDeleteTask } from "./useDeleteTask";
 import { useModalStore } from "@/shared/stores/useModalStore";
 
