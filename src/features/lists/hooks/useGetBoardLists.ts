@@ -12,9 +12,9 @@ export const useGetBoardLists = () => {
   }
 
   return useQuery({
-    queryKey: ["columns", boardId],
+    queryKey: ["lists", boardId],
     queryFn: () => getBoardLists(activeTeam.teamData._id, boardId),
     //staleTime: 1000 * 60 * 5,
-    retry: true,
+    //retry: true,
   });
 };

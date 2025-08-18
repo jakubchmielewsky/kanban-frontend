@@ -1,5 +1,5 @@
 import api from "../../lib/axios";
-import { List } from "../../shared/types/column";
+import { List, UpdateListDto } from "../../shared/types/column";
 import { ApiResponse } from "../../shared/types/api";
 
 export const getBoardLists = async (
@@ -26,17 +26,18 @@ export const createList = async (
   return res.data;
 };
 
-// export const updateColumn = async (
-//   boardId: string,
-//   columnId: string,
-//   updates: UpdateColumnDto
-// ): Promise<Column> => {
-//   const res = await api.patch<ApiResponse<Column>>(
-//     `/boards/${boardId}/columns/${columnId}`,
-//     updates
-//   );
-//   return res.data.data!;
-// };
+export const updateList = async (
+  teamId: string,
+  boardId: string,
+  listId: string,
+  updates: UpdateListDto
+): Promise<ApiResponse<List>> => {
+  const res = await api.patch<ApiResponse<List>>(
+    `/teams/${teamId}/boards/${boardId}/lists/${listId}`,
+    updates
+  );
+  return res.data;
+};
 
 // export const deleteColumn = async (
 //   boardId: string,

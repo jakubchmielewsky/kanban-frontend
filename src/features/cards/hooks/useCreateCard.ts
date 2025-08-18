@@ -20,7 +20,7 @@ export const useCreateCard = (listId: string) => {
     //TODO: replace with socket.io update
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["cards", listId],
+        queryKey: ["cards", boardId],
       });
     },
   });

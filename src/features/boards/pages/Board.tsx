@@ -1,15 +1,36 @@
-import { DndContext } from "@dnd-kit/core";
 import { useGetBoardLists } from "@/features/lists/hooks/useGetBoardLists";
 import { List } from "@/features/lists/components/List";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useCreateList } from "@/features/lists/hooks/useCreateList";
+import { DndContext, DragOverlay } from "@dnd-kit/core";
+import { useDragAndDrop } from "../hooks/useDragAndDrop";
+import { AppCard } from "@/features/cards/components/AppCard";
+import { useFetchCards } from "@/features/cards/hooks/useFetchCards";
+import { Card } from "@/shared/types/card";
+import {
+  horizontalListSortingStrategy,
+  SortableContext,
+} from "@dnd-kit/sortable";
+import { List as ListType } from "@/shared/types/column";
 
 export const Board: React.FC = () => {
   const listsQuery = useGetBoardLists();
-  const lists = listsQuery.data?.data || [];
+  const fetchCardsQuery = useFetchCards();
+
+  const lists = useMemo(
+    () => listsQuery.data?.data || [],
+    [listsQuery.data?.data]
+  );
+  const cards = useMemo(
+    () => fetchCardsQuery.data?.data || [],
+    [fetchCardsQuery.data?.data]
+  );
+
+  const [dndCards, setDndCards] = useState<Card[]>([]);
+  const [dndLists, setDndLists] = useState<ListType[]>([]);
 
   const [isAdding, setIsAdding] = useState(false);
   const [title, setTitle] = useState("");
@@ -19,9 +40,17 @@ export const Board: React.FC = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
+    setDndCards(cards);
+  }, [cards]);
+
+  useEffect(() => {
+    setDndLists(lists);
+  }, [lists]);
+
+  useEffect(() => {
     const scrollToInput = () => {
       if (inputRef.current && isAdding) {
-        inputRef.current.scrollIntoView({ behavior: "smooth", inline: "end" });
+        inputRef.current.scrollIntoView({ behavior: "smooth" });
       }
     };
 
@@ -39,13 +68,35 @@ export const Board: React.FC = () => {
     setTitle("");
   };
 
+  const {
+    handleDragStart,
+    handleDragOver,
+    handleDragEnd,
+    sensors,
+    dragOverlayItem,
+  } = useDragAndDrop(dndCards, setDndCards, dndLists, setDndLists);
+
   return (
-    <DndContext>
-      <ScrollArea className="h-full">
-        <div className="flex space-x-4 p-4">
-          {lists.map((list) => (
-            <List list={list} key={list._id} />
-          ))}
+    <DndContext
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}
+    >
+      <ScrollArea className="h-full flex flex-1">
+        <div className="flex space-x-4 p-4 flex-1">
+          <SortableContext
+            items={dndLists.map((c) => c._id)}
+            strategy={horizontalListSortingStrategy}
+          >
+            {dndLists.map((list) => (
+              <List
+                list={list}
+                key={list._id}
+                cards={dndCards.filter((c) => c.listId === list._id)}
+              />
+            ))}
+          </SortableContext>
           {isAdding && (
             <form onSubmit={handleCreateList} onBlur={handleBlur}>
               <Input
@@ -72,6 +123,19 @@ export const Board: React.FC = () => {
 
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
+      <DragOverlay>
+        {dragOverlayItem?.type === "card" && (
+          <AppCard card={dragOverlayItem.card} />
+        )}
+        {dragOverlayItem?.type === "list" && (
+          <List
+            list={dragOverlayItem.list}
+            cards={dndCards.filter(
+              (c) => c.listId === dragOverlayItem.list._id
+            )}
+          />
+        )}
+      </DragOverlay>
     </DndContext>
   );
 };

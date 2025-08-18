@@ -16,7 +16,7 @@ export const useCreateList = () => {
     mutationFn: (name: string) =>
       createList(activeTeam.teamData._id, boardId, name),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["columns", boardId] });
+      queryClient.invalidateQueries({ queryKey: ["lists", boardId] });
     },
   });
 };

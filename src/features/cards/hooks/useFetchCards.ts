@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 import { ApiErrorResponse, ApiResponse } from "@/shared/types/api";
 import { Card } from "@/shared/types/card";
 
-export const useFetchCards = (listId: string) => {
+export const useFetchCards = () => {
   const activeTeam = useActiveTeamStore((s) => s.activeTeam);
   const { boardId } = useSafeParams();
 
@@ -15,9 +15,9 @@ export const useFetchCards = (listId: string) => {
   }
 
   return useQuery<ApiResponse<Card[]>, AxiosError<ApiErrorResponse>>({
-    queryKey: ["cards", listId],
-    queryFn: () => fetchCards(activeTeam.teamData._id, boardId, listId),
+    queryKey: ["cards", boardId],
+    queryFn: () => fetchCards(activeTeam.teamData._id, boardId),
     //staleTime: 1000 * 60 * 5,
-    enabled: !!boardId && !!listId && !!activeTeam?.teamData._id,
+    enabled: !!boardId && !!activeTeam?.teamData._id,
   });
 };
